@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickMapping", "QuickMapping\QuickMapping.csproj", "{69D70CF2-28B4-424D-80A6-34D3A82C95BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickMapping.Tests", "QuickMapping.Tests\QuickMapping.Tests.csproj", "{760EB741-668C-44F8-8E41-A70ECE82FC6C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69D70CF2-28B4-424D-80A6-34D3A82C95BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69D70CF2-28B4-424D-80A6-34D3A82C95BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69D70CF2-28B4-424D-80A6-34D3A82C95BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69D70CF2-28B4-424D-80A6-34D3A82C95BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{760EB741-668C-44F8-8E41-A70ECE82FC6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{760EB741-668C-44F8-8E41-A70ECE82FC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{760EB741-668C-44F8-8E41-A70ECE82FC6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{760EB741-668C-44F8-8E41-A70ECE82FC6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0071936-A22D-45FB-A926-0214675A9921}
+	EndGlobalSection
+EndGlobal

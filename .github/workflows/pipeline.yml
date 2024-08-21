@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - development
+      - master
+
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+  deploy-nuget:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Pack the NuGet package
+        run: dotnet pack --configuration Release --output ./nupkgs
+
+      - name: Find .nupkg file
+        id: find_nuget_package
+        run: |
+          PACKAGE_PATH=$(find ./nupkgs -name '*.nupkg')
+          echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
+
+      - name: Publish to NuGet
+        if: env.PACKAGE_PATH != ''
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ${{ env.PACKAGE_PATH }} --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
