@@ -5,13 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Title>Quick Mapper between classes</Title>
+    <Title>Quick Mapping between classes</Title>
     <Authors>Hasan Divarci</Authors>
-    <Description>You can map your classes using mapper methods</Description>
+    <Description>This package provides a robust and efficient public mapper class tailored for ASP.NET Core 8 applications. It simplifies the process of mapping between different data models, DTOs, and view models, enabling clean, maintainable, and testable code.</Description>
     <PackageProjectUrl>https://github.com/Divarci/QuickMapping</PackageProjectUrl>
     <PackageIcon></PackageIcon>
     <RepositoryUrl>https://github.com/Divarci/QuickMapping.git</RepositoryUrl>
     <PackageReleaseNotes>Initial Release Test</PackageReleaseNotes>
+    <Version>$(VersionPrefix)1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
