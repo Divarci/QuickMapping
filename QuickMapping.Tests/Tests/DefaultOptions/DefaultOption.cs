@@ -2,14 +2,14 @@
 using QuickMapping.Concrete;
 using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
-using QuickMapping.Tests.Models;
+using QuickMapping.Tests.Tests.DefaultOptions.Models;
 
-namespace QuickMapping.Tests;
-public class MapperUnitTest
+namespace QuickMapping.Tests.Tests.DefaultOptions;
+public class DefaultOption
 {
     private readonly IQuickMapper _mapper;
 
-    public MapperUnitTest() =>
+    public DefaultOption() =>
         _mapper = new QuickMapper();
 
     [Fact]
@@ -58,14 +58,14 @@ public class MapperUnitTest
         Assert.NotNull(usersVM);
         Assert.NotNull(memberVM);
 
-        for (int i = 0; i < users.Count; i++)        
+        for (int i = 0; i < users.Count; i++)
             Assert.Equal(usersVM[i].Fullname, users[i].Fullname);
 
         for (int i = 0; i < members.Count(); i++)
             Assert.Equal(memberVM[i].Fullname, users[i].Fullname);
 
-        Assert.Equal(usersVM.Count, users.Count);        
-        Assert.Equal(memberVM.Count, members.Count());        
+        Assert.Equal(usersVM.Count, users.Count);
+        Assert.Equal(memberVM.Count, members.Count());
 
     }
 
@@ -87,7 +87,7 @@ public class MapperUnitTest
         //Assert
 
         Assert.NotNull(companyVM);
-        Assert.Equal(companyVM.Description,futureLtd.Description);
+        Assert.Equal(companyVM.Description, futureLtd.Description);
 
         for (int i = 0; i < companyVM.Employees.Count; i++)
             Assert.Equal(companyVM.Employees[i].Fullname, futureLtd.Employees[i].Fullname);

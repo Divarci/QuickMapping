@@ -1,12 +1,21 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Exceptions;
+using QuickMapping.Options;
 using System.Collections;
+using System.Reflection;
 
 namespace QuickMapping.Concrete;
 public class QuickMapper : IQuickMapper
 {
+    private readonly MappingOptions? _options;
+
     private const string COLLECTION = "Collection";
     private const string SINGLE_UNIT = "SingleUnit";
+
+    public QuickMapper() { }
+
+    public QuickMapper(MappingOptions options) =>
+        _options = options;    
 
     public Destination Map<Source, Destination>(Source source, int depth)
     {
@@ -68,7 +77,12 @@ public class QuickMapper : IQuickMapper
         object source,
         object? destination = null)
     {
-        var sourceProperties = sourceType.GetProperties().ToDictionary(p => p.Name);
+        Dictionary<string, PropertyInfo> sourceProperties;
+
+        if(_options is not null && !_options.IsSensitiveCase)
+            sourceProperties = sourceType.GetProperties().ToDictionary(p => p.Name.ToLower());
+        else 
+            sourceProperties = sourceType.GetProperties().ToDictionary(p => p.Name);
 
         var destinationProperties = destinationType.GetProperties();
 
@@ -76,12 +90,22 @@ public class QuickMapper : IQuickMapper
 
         foreach (var destinationProperty in destinationProperties)
         {
-            if (!sourceProperties.TryGetValue(destinationProperty.Name, out var sourceProperty))
-                continue;
+            PropertyInfo? sourceProperty = null;
+
+            if (_options is not null && !_options.IsSensitiveCase)
+            {
+                if (!sourceProperties.TryGetValue(destinationProperty.Name.ToLower(), out sourceProperty))
+                    continue;
+            }
+            else
+            {
+                if (!sourceProperties.TryGetValue(destinationProperty.Name, out sourceProperty))
+                    continue;
+            }    
 
             if (destinationProperty.PropertyType.IsClass && destinationProperty.PropertyType != typeof(string))
             {
-                var nestedValue = sourceProperty.GetValue(source) ??
+                var nestedValue = sourceProperty!.GetValue(source) ??
                     throw new MapperException("Nested value can not be null");
 
                 depth--;
@@ -106,7 +130,7 @@ public class QuickMapper : IQuickMapper
                 continue;
             }
 
-            if (destinationProperty.PropertyType == sourceProperty.PropertyType)
+            if (destinationProperty.PropertyType == sourceProperty!.PropertyType)
             {
                 var value = sourceProperty.GetValue(source) ??
                     throw new MapperException("Source property value can not be null");
@@ -119,15 +143,15 @@ public class QuickMapper : IQuickMapper
     }
 
     private object? CollectionMapper(
-        Type destinationType, 
-        ref int depth, 
-        object source, 
+        Type destinationType,
+        ref int depth,
+        object source,
         object? destination = null)
     {
         if (source is not IEnumerable sourceList)
             throw new MapperException("Source object of type is not an IEnumerable");
 
-        if(destinationType.IsAbstract || destinationType.IsInterface)
+        if (destinationType.IsAbstract || destinationType.IsInterface)
             throw new MapperException("Destination object of type can not be an abstract type");
 
         var destinationObject = Activator.CreateInstance(destinationType) ??

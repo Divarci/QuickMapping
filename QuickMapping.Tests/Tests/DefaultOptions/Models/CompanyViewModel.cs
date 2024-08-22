@@ -1,4 +1,4 @@
-﻿namespace QuickMapping.Tests.Models;
+﻿namespace QuickMapping.Tests.Tests.DefaultOptions.Models;
 public class CompanyViewModel
 {
     public string Description { get; set; } = null!;
