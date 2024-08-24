@@ -20,7 +20,12 @@ public class QuickMapper : IQuickMapper
         if (depth <= 0)
             throw new MapperException("Depth must be greater than 0");
 
-        var mappedObject = HelperMethods.MapObject(typeof(Source), typeof(Destination), depth, source, _options!);
+        var mappedObject = ObjectMapper.Map(
+            typeof(Source), 
+            typeof(Destination), 
+            depth, 
+            source,
+            _options!);
 
         return (Destination)mappedObject!;
     }
@@ -36,10 +41,14 @@ public class QuickMapper : IQuickMapper
         if (depth <= 0)
             throw new MapperException("Depth must be greater than 0");
 
-        var mappedObject = HelperMethods.MapObject(typeof(Source), typeof(Destination), depth, source, _options!, destination);
+        var mappedObject = ObjectMapper.Map(
+            typeof(Source), 
+            typeof(Destination), 
+            depth, 
+            source, 
+            _options!,
+            destination);
 
         return (Destination)mappedObject!;
     }
-
-
 }
