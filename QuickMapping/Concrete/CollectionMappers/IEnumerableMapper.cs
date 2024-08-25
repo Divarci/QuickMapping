@@ -36,13 +36,20 @@ public static class IEnumerableMapper
         var addMethod = listType.GetMethod("Add") ??
             throw new MapperException("Destination type does not have add method");
 
-        var iterateSource = (IEnumerable)source;
-
+        var iterateSource = (IEnumerable)source;     
+            
         foreach (var sourceElement in iterateSource)
         {
-            depth--;
+            if (PrimitiveMapper.Validate(destinationElementType) &&
+            PrimitiveMapper.Validate(sourceElementType))
+            {
+                addMethod.Invoke(list, [sourceElement]);
+            }
+            else
+            {
+                depth--;
 
-            var destinationElementObject = ObjectMapper.Map(
+                var destinationElementObject = ObjectMapper.Map(
                 sourceElementType,
                 destinationElementType,
                 depth,
@@ -51,10 +58,10 @@ public static class IEnumerableMapper
                 destination,
                 previousProcess);
 
-            depth++;
+                addMethod.Invoke(list, [destinationElementObject]);
 
-            addMethod.Invoke(list, [destinationElementObject]);
-
+                depth++;
+            }
         }
         return list ??
             throw new MapperException("IEnumerable Mapper failed");
