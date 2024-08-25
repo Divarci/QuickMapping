@@ -20,7 +20,7 @@ public static class IReadOnlyCollectionMapper
     }
 
     public static object Map(
-        Type sourceELementType,
+        Type sourceElementType,
         Type destinationElementType,
         object source,
         object? destination,
@@ -40,10 +40,18 @@ public static class IReadOnlyCollectionMapper
 
         foreach (var sourceElement in iterateSource)
         {
-            depth--;
 
-            var destinationElementObject = ObjectMapper.Map(
-                sourceELementType,
+            if (PrimitiveMapper.Validate(destinationElementType) &&
+            PrimitiveMapper.Validate(sourceElementType))
+            {
+                addMethod.Invoke(list, [sourceElement]);
+            }
+            else
+            {
+                depth--;
+
+                var destinationElementObject = ObjectMapper.Map(
+                sourceElementType,
                 destinationElementType,
                 depth,
                 sourceElement,
@@ -51,9 +59,11 @@ public static class IReadOnlyCollectionMapper
                 destination,
                 previousProcess);
 
-            depth++;
+                addMethod.Invoke(list, [destinationElementObject]);
 
-            addMethod.Invoke(list, [destinationElementObject]);
+                depth++;
+            }
+
         }
 
         var readonlyListType = typeof(ReadOnlyCollection<>).MakeGenericType(destinationElementType);

@@ -56,7 +56,7 @@ public static class SingleUnitMapper
 
                 object? nestedDestination = null;
 
-                if(nestedDestination is not null)
+                if(destination is not null)
                     nestedDestination = destinationProperty!.GetValue(destination);
 
                 if (nestedValue is IEnumerable)
