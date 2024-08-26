@@ -19,6 +19,6 @@ public interface IQuickMapper
     /// <item><param name="depth">The count of mapping <em>depth</em></param></item>
     /// </list>
     /// </summary>
-    /// <returns>The <strong>mapped object</strong>.</returns>
+    /// <returns>The updated<strong>mapped object</strong>.</returns>
     Destination Map<Source, Destination>(Source source, Destination destination, int depth);
 }

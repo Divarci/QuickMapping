@@ -1,4 +1,5 @@
 ﻿using QuickMapping.Abstract;
+using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
 using QuickMapping.Options;
 
