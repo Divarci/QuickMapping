@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Extensions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -28,12 +29,14 @@ namespace QuickMapping.Tests.Tests
 
             };
 
-            var user = User.CreateMultiUserWith_IEnumerable().AsQueryable();
+            var user = Company<IEnumerable<User>>.CreateMultiCompanyWith_IEnumerable().AsQueryable();
 
             //Act
 
-            var dto = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(user, 3).AsQueryable();
-            string test2 = dto.GetType().Name;
+            //var dto = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(user, 3).AsQueryable();
+
+            //var test = user.MapTo<Company<IEnumerable<User>>, CompanyViewModel<IEnumerable<UserViewModel>>>(4);
+            //string test2 = test.GetType().Name;
         }
         
         class Student
