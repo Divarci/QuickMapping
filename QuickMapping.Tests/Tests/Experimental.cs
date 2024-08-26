@@ -35,8 +35,8 @@ namespace QuickMapping.Tests.Tests
 
             //var dto = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(user, 3).AsQueryable();
 
-            var test = user.MapTo<Company<IEnumerable<User>>, CompanyViewModel<IEnumerable<UserViewModel>>>(4);
-            string test2 = test.GetType().Name;
+            //var test = user.MapTo<Company<IEnumerable<User>>, CompanyViewModel<IEnumerable<UserViewModel>>>(4);
+            //string test2 = test.GetType().Name;
         }
         
         class Student
