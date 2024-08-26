@@ -41,6 +41,18 @@ public static class CollectionMapper
                 options,
                 MapperDefaults.COLLECTION);
 
+        if (IQueryableMapper.Validate(destinationElementType, destinationType) &&
+            IQueryableMapper.Validate(sourceElementType, sourceType))
+            return IQueryableMapper.Map(
+                destinationType,
+                sourceElementType,
+                destinationElementType,
+                source,
+                destination,
+                depth,
+                options,
+                MapperDefaults.COLLECTION);
+
         if (IEnumerableMapper.Validate(destinationElementType, destinationType) &&
             IEnumerableMapper.Validate(sourceElementType, sourceType))
             return IEnumerableMapper.Map(
