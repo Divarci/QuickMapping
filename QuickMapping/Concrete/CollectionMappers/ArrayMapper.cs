@@ -1,4 +1,5 @@
-﻿using QuickMapping.Options;
+﻿using QuickMapping.Concrete.Mappers;
+using QuickMapping.Options;
 
 namespace QuickMapping.Concrete.CollectionMappers;
 public static class ArrayMapper

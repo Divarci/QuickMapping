@@ -1,10 +1,9 @@
-﻿using QuickMapping.Concrete.Mappers;
-using QuickMapping.Options;
+﻿using QuickMapping.Options;
 using System.Collections;
 
-namespace QuickMapping.Concrete;
+namespace QuickMapping.Concrete.Mappers;
 public static class ObjectMapper
-{   
+{
     public static object? Map(
        Type sourceType,
        Type destinationType,
@@ -23,23 +22,23 @@ public static class ObjectMapper
             depth++;
 
         bool isCollection = typeof(IEnumerable)
-            .IsAssignableFrom(sourceType) && 
+            .IsAssignableFrom(sourceType) &&
             sourceType != typeof(string);
 
         if (isCollection)
             return CollectionMapper.Map(
-                destinationType, 
-                ref depth, 
-                source, 
-                options, 
+                destinationType,
+                ref depth,
+                source,
+                options,
                 destination);
 
         return SingleUnitMapper.Map(
-            sourceType, 
-            destinationType, 
-            ref depth, 
-            source, 
-            options, 
+            sourceType,
+            destinationType,
+            ref depth,
+            source,
+            options,
             destination);
     }
 }
