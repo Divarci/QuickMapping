@@ -1,4 +1,3 @@
-
 # QuickMapping
 
 QuickMapping is a lightweight mapping library for .NET projects. This repository is open for contributions and feedback as it is a new project and may have some bugs or issues. 
@@ -20,10 +19,11 @@ You can install QuickMapping via NuGet Package Manager or by using the .NET CLI.
 Open a terminal or command prompt and run the following command:
 
 ```
-dotnet add package QuickMapping --version 1.0.3
+dotnet add package QuickMapping --version 1.0.5
 ```
 ## Getting Started
 In the `Program.cs` file, add QuickMapping to the service collection:
+(Default case sensitive option is `true` )
 ```
 using QuickMapping.Extensions;
 
@@ -35,8 +35,24 @@ builder.Services.AddQuickMapping();
 var app = builder.Build();
 ```
 
-## Usage
+If you would like to **add Case sensitive** false options:
+```
+using QuickMapping.Extensions;
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddQuickMapping(opt =>
+{
+    opt.IsSensitiveCase = true;
+});
+
+var app = builder.Build();
+```
+
+
+## Usage
+**Preparation**
 ```
 public class User(int id, string fullname, int age)
 {
@@ -51,8 +67,28 @@ public class UserViewModel()
 }
 
 var michael = new User(1, "Michael Jordon", 38);
+```
+Create **NEW** instance of object
+```
 var userVM = _mapper.Map<User, UserViewModel>(michael, 1);
 ```
+Use **EXISTING** instance of object
+```
+var request = new UserViewModel() { Fullname = "Jackie Chan" };
+var jackie = _mapper.Map(michael,request);
+```
+Use **MapTo** IQueryable Extension
+```
+var dbData= _repository.GetAll(); // IQueryable<Data>
+var query = dbData.MapTo<Data,DataViewModel>(3, options) //IQueryable<DataViewModel>
+```
+## Unsupported Typed
+
+1.  Dictionary Mapper
+2.  Array Mapper
+
+These features will be available V1.0.6
+
 ## Contributing
 We welcome contributions from the community! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request. Here’s how you can contribute:
 
