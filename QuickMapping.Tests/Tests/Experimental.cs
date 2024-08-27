@@ -11,49 +11,23 @@ namespace QuickMapping.Tests.Tests
     {
         private readonly IQuickMapper _mapper;
 
-        public Experimental()=>        
+        public Experimental() =>
             _mapper = new QuickMapper();
 
         [Fact]
         public void PrirmitiveCollectonMap()
         {
             //Arrange
-            var student = new Student()
-            {
-                Name = "Ali",
-                Surname = "Yildiz",
-                Number = 14,
-                Lessons = ["Matematik", "Edebiyat"],
-                Numbers = new List<int>() { 1, 3, 5 }.AsReadOnly(),
-                Friends = [new() { Fullname ="Cenk"}, new() { Fullname="Berk"}]
+            int[] testArray = [1, 2, 3, 4];
+            int[] testArray2 = [5, 6, 7, 8];
+            int[] testArray3 = [9, 0, 1, 2];
 
-            };
-
-            var user = Company<IEnumerable<User>>.CreateMultiCompanyWith_IEnumerable().AsQueryable();
+            List<int[]> arrayList = [testArray, testArray2, testArray3];
 
             //Act
 
-            var dto = user.MapTo<CompanyViewModel<IEnumerable<UserViewModel>>>(2, null);
-
-            string test2 = dto.GetType().Name;
-        }
-        
-        class Student
-        {
-            public string Name { get; set; }
-            public string Surname { get; set; }
-            public int Number { get; set; }
-            public IReadOnlyCollection<string> Lessons { get; set; }
-            public ReadOnlyCollection<int> Numbers { get; set; }
-            public IList<UserViewModel> Friends { get; set; }
+            var mappedObject = _mapper.Map<List<int[]>, List<int[]>>(arrayList, 1);
         }
 
-        class StudentDto
-        {
-            public string Name { get; set; }
-            public IReadOnlyCollection<string> Lessons { get; set; }
-            public ReadOnlyCollection<int> Numbers { get; set; }
-            public IList<UserViewModel> Friends { get; set; }
-        }
     }
 }
