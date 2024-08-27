@@ -18,7 +18,7 @@ public static class CollectionMapper
         var sourceType = source.GetType();
 
         if (ArrayMapper.Validate(destinationType) && ArrayMapper.Validate(sourceType))
-            throw new MapperException("Array mapper is not supported yet");
+            return source;
 
         var sourceElementType = sourceType
             .GetGenericArguments()
