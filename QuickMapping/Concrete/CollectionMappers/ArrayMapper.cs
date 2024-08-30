@@ -1,11 +1,12 @@
 ﻿using QuickMapping.Concrete.Mappers;
+using QuickMapping.Exceptions;
 using QuickMapping.Options;
 
 namespace QuickMapping.Concrete.CollectionMappers;
 public static class ArrayMapper
 {
-    public static bool Validate(Type collectionType) =>
-        collectionType.IsArray;
+    public static bool Validate(Type sourceType, Type destinationType) =>
+        sourceType.IsArray && destinationType.IsArray;
 
     public static object Map(
        Type sourceElementType,
@@ -13,9 +14,12 @@ public static class ArrayMapper
        object source,
        object? destination,
        int depth,
-       MappingOptions options,
+    MappingOptions options,
        string previousProcess)
     {
+        if (sourceElementType.Name != destinationElementType.Name)
+            throw new MapperException("Source Collection type and Destination Collection type must be equal");
+
         var sourceArray = (Array)source;
 
         var destinationArray = Array

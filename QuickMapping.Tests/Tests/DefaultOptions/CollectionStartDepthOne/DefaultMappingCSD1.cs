@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -108,6 +109,10 @@ public class DefaultMappingCSD1
 
         var usersVM = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(users, 1);
 
+        //Act & Assert
+
+        Assert.Throws<MapperException>(() => _mapper.Map<IEnumerable<User>, IList<UserViewModel>>(users, 1));
+
         //Assert
 
         Assert.NotNull(usersVM);
@@ -181,4 +186,26 @@ public class DefaultMappingCSD1
         Assert.Equal(usersVM.Count(), users.Count());
     }
 
+    [Fact]
+    public void Collection_Start_Mapping_Depth_1_For_IQueryable()
+    {
+        //Arrange
+
+        var users = User.CreateMultiUserWith_IQueryable();
+
+        //Act
+
+        var usersVM = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(users, 1);
+       
+
+        //Assert
+
+        Assert.NotNull(usersVM);
+
+        foreach (var user in usersVM)
+            Assert.Null(user);
+
+        Assert.Equal(usersVM.Count(), users.Count());
+    }
+  
 }

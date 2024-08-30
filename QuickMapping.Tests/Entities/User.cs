@@ -46,4 +46,7 @@ public class User
 
     public static ReadOnlyCollection<User> CreateMultiUserWith_ReadonlyCollection() =>
        CreateMultiUserWith_List().AsReadOnly();
+
+    public static IQueryable<User> CreateMultiUserWith_IQueryable() =>
+       CreateMultiUserWith_List().AsQueryable();
 }

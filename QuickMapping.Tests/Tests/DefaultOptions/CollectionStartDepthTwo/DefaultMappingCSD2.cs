@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -152,7 +153,7 @@ public class DefaultMappingCSD2
     {
         //Arrange
 
-        var europeCompanies = Company<ICollection<User>>.CreateMultiCompanyWith_IEnumerable();
+        var europeCompanies = Company<IEnumerable<User>>.CreateMultiCompanyWith_IEnumerable();
 
         //Act
 
@@ -314,4 +315,50 @@ public class DefaultMappingCSD2
                 Assert.Null(companyVM[i].Employees[y]);
         }
     }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_2_For_IQueryable()
+    {
+        //Arrange
+
+        var europeCompanies = Company<IQueryable<User>>.CreateMultiCompanyWith_IQueryable();
+
+        //Act
+
+        var companyVM = _mapper.Map<IQueryable<Company<IQueryable<User>>>, IQueryable<CompanyViewModel<IQueryable<UserViewModel>>>>(europeCompanies, 2);
+
+        //Assert
+
+        Assert.NotNull(companyVM);
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+
+        using (var europeCompaniesEnumerator = europeCompanies.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.GetEnumerator())
+        {
+            while (europeCompaniesEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var europeCompany = europeCompaniesEnumerator.Current;
+                var companyVMItem = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMItem);
+                Assert.Equal(companyVMItem.Description, europeCompany.Description);
+                Assert.NotNull(companyVMItem.Director);
+                Assert.Equal(companyVMItem.Director.Fullname, europeCompany.Director.Fullname);
+                Assert.NotNull(companyVMItem.Employees);
+                Assert.Equal(companyVMItem.Employees.Count(), europeCompany.Employees.Count());
+
+                using (var europeEmployeesEnumerator = europeCompany.Employees.GetEnumerator())
+                using (var companyVMEmployeesEnumerator = companyVMItem.Employees.GetEnumerator())
+                {
+                    while (europeEmployeesEnumerator.MoveNext() && companyVMEmployeesEnumerator.MoveNext())
+                    {
+                        var europeEmployee = europeEmployeesEnumerator.Current;
+                        var companyVMEmployee = companyVMEmployeesEnumerator.Current;
+
+                        Assert.Null(companyVMEmployee);
+                    }
+                }
+            }
+        }
+    }   
 }

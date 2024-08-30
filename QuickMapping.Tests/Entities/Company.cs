@@ -22,6 +22,7 @@ public class Company<T>(int id, string description, T employees, User director)
             ListType.IReadonlyCollection => User.CreateMultiUserWith_IReadonlyCollection(),
             ListType.IReadonlyList => User.CreateMultiUserWith_IReadonlyList(),
             ListType.ReadonlyCollection => User.CreateMultiUserWith_ReadonlyCollection(),
+            ListType.IQueryable => User.CreateMultiUserWith_IQueryable(),
             _ => throw new MapperException("User List not exist")
         };
 
@@ -65,4 +66,8 @@ public class Company<T>(int id, string description, T employees, User director)
     public static ReadOnlyCollection<Company<ReadOnlyCollection<User>>> CreateMultiCompanyWith_ReadOnlyCollection() =>
         new([Company<ReadOnlyCollection<User>>.CreateSingleCompany("Future Ltd", ListType.ReadonlyCollection),
          Company<ReadOnlyCollection<User>>.CreateSingleCompany("Vision Ltd", ListType.ReadonlyCollection)]);
+
+    public static IQueryable<Company<IQueryable<User>>> CreateMultiCompanyWith_IQueryable() =>
+        new List<Company<IQueryable<User>>> {Company<IQueryable<User>>.CreateSingleCompany("Future Ltd", ListType.IQueryable),
+         Company<IQueryable<User>>.CreateSingleCompany("Vision Ltd", ListType.IQueryable) }.AsQueryable();
 }
