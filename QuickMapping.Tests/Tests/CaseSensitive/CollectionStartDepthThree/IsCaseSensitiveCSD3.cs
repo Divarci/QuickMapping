@@ -76,6 +76,7 @@ public class IsCaseSensitiveCSD3
 
         }
     }
+
     [Fact]
     public void Collection_Start_Mapping_Depth_3_For_IList()
     {
@@ -151,12 +152,13 @@ public class IsCaseSensitiveCSD3
             }
         }
     }
+
     [Fact]
     public void Collection_Start_Mapping_Depth_3_For_IEnumerable()
     {
         //Arrange
 
-        var europeCompanies = Company<ICollection<User>>.CreateMultiCompanyWith_IEnumerable();
+        var europeCompanies = Company<IEnumerable<User>>.CreateMultiCompanyWith_IEnumerable();
 
         //Act
 
@@ -316,6 +318,52 @@ public class IsCaseSensitiveCSD3
 
             for (int y = 0; y < companyVM[i].EmployeeS.Count; y++)
                 Assert.Equal(companyVM[i].EmployeeS[y].fullname, europeCompanies[i].Employees[y].Fullname);
+        }
+    }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_3_For_IQueryable()
+    {
+        //Arrange
+
+        var europeCompanies = Company<IQueryable<User>>.CreateMultiCompanyWith_IQueryable();
+
+        //Act
+
+        var companyVM = _mapper.Map<IQueryable<Company<IQueryable<User>>>, IQueryable<CompanyViewModelWithLowerCase<IQueryable<UserViewModelWithLowerCase>>>>(europeCompanies, 3);
+
+        //Assert
+
+        Assert.NotNull(companyVM);
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+
+        using (var europeCompaniesEnumerator = europeCompanies.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.GetEnumerator())
+        {
+            while (europeCompaniesEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var europeCompany = europeCompaniesEnumerator.Current;
+                var companyVMItem = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMItem);
+                Assert.Equal(companyVMItem.DESCRIPTION, europeCompany.Description);
+                Assert.NotNull(companyVMItem.director);
+                Assert.Equal(companyVMItem.director.fullname, europeCompany.Director.Fullname);
+                Assert.NotNull(companyVMItem.EmployeeS);
+                Assert.Equal(companyVMItem.EmployeeS.Count(), europeCompany.Employees.Count());
+
+                using (var europeEmployeesEnumerator = europeCompany.Employees.GetEnumerator())
+                using (var companyVMEmployeesEnumerator = companyVMItem.EmployeeS.GetEnumerator())
+                {
+                    while (europeEmployeesEnumerator.MoveNext() && companyVMEmployeesEnumerator.MoveNext())
+                    {
+                        var europeEmployee = europeEmployeesEnumerator.Current;
+                        var companyVMEmployee = companyVMEmployeesEnumerator.Current;
+
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
+                    }
+                }
+            }
         }
     }
 }

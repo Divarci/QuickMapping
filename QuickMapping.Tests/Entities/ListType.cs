@@ -8,5 +8,6 @@ public enum ListType
     IEnumerable = 4,
     IReadonlyCollection = 5,
     IReadonlyList = 6,
-    ReadonlyCollection = 7
+    ReadonlyCollection = 7,
+    IQueryable = 8
 }
