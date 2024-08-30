@@ -1,6 +1,6 @@
 ﻿using QuickMapping.Concrete.Mappers;
-using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 
 namespace QuickMapping.Concrete.CollectionMappers;
 public static class ArrayMapper
@@ -9,38 +9,44 @@ public static class ArrayMapper
         sourceType.IsArray && destinationType.IsArray;
 
     public static object Map(
-       Type sourceElementType,
-       Type destinationElementType,
+       Type sourceType,
+       Type destinationType,
        object source,
        object? destination,
        int depth,
     MappingOptions options,
        string previousProcess)
-    {
-        if (sourceElementType.Name != destinationElementType.Name)
-            throw new MapperException("Source Collection type and Destination Collection type must be equal");
-
+    {       
         var sourceArray = (Array)source;
-
+        
         var destinationArray = Array
-            .CreateInstance(destinationElementType, sourceArray.Length);
+            .CreateInstance(destinationType.GetElementType()!, sourceArray.Length);
 
         for (int i = 0; i < sourceArray.Length; i++)
         {
-            depth--;
+            if (IsPrimitive.Check(sourceArray.GetValue(i)!.GetType()))
+            {                
+                destinationArray.SetValue(sourceArray.GetValue(i), i);
+                continue;
+            }
+            else
+            {
+                depth--;
 
-            var destinationElementObject = ObjectMapper.Map(
-                sourceElementType,
-                destinationElementType,
-                depth,
-                sourceArray.GetValue(i)!,
-                options,
-                destination,
-                previousProcess);
+                var destinationElementObject = ObjectMapper.Map(
+                    sourceType.GetElementType()!,
+                    destinationType.GetElementType()!,
+                    depth,
+                    sourceArray.GetValue(i)!,
+                    options,
+                    destination,
+                    previousProcess);
 
-            depth++;
+                depth++;
 
-            destinationArray.SetValue(destinationElementObject, i);
+                destinationArray.SetValue(destinationElementObject, i);
+                continue;
+            }
         }
         return destinationArray;
     }

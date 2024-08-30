@@ -1,6 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -42,8 +43,8 @@ public static class IReadOnlyCollectionMapper
         foreach (var sourceElement in iterateSource)
         {
 
-            if (PrimitiveMapper.Validate(destinationElementType) &&
-            PrimitiveMapper.Validate(sourceElementType))
+            if (IsPrimitive.Check(destinationElementType) &&
+                IsPrimitive.Check(sourceElementType))
             {
                 addMethod.Invoke(list, [sourceElement]);
             }
