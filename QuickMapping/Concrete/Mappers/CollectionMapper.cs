@@ -17,8 +17,8 @@ public static class CollectionMapper
 
         var sourceType = source.GetType();
 
-        if (ArrayMapper.Validate(destinationType) && ArrayMapper.Validate(sourceType))
-            return source;
+        if (ArrayMapper.Validate(sourceType, destinationType))       
+            return source;        
 
         var sourceElementType = sourceType
             .GetGenericArguments()
