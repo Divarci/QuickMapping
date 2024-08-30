@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 using System.Linq.Expressions;
 
 namespace QuickMapping.Extensions;
@@ -63,7 +64,7 @@ public static class MapperExtensions
                 return null;
 
             //SIMPLE TYPE MAPPING
-            if (IsSimpleType(sourceProp.PropertyType))
+            if (IsPrimitive.Check(sourceProp.PropertyType))
                 return Expression.Bind(destProp, Expression.Property(parameter, sourceProp));
 
             //COLLECTION MAPPING
@@ -121,17 +122,5 @@ public static class MapperExtensions
 
         var newExpression = Expression.New(destinationType);
         return Expression.MemberInit(newExpression, bindings!);
-    }
-
-    private static bool IsSimpleType(Type type) =>
-        type.IsPrimitive ||
-            new Type[] {
-                typeof(string),
-                typeof(decimal),
-                typeof(DateTime),
-                typeof(DateTimeOffset),
-                typeof(TimeSpan),
-                typeof(Guid)
-            }.Contains(type) ||
-            Convert.GetTypeCode(type) != TypeCode.Object;
+    }   
 }

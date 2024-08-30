@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 using System.Collections;
 
 namespace QuickMapping.Concrete.Mappers;
@@ -29,8 +30,9 @@ public static class ObjectMapper
         if (isCollection)
         {
             if(sourceType.IsArray)
-                if(sourceType.Name != destinationType.Name)
-                    throw new MapperException("Unsupported mapping type");
+                if(IsPrimitive.Check(sourceType.GetElementType()!))
+                    if(sourceType.GetElementType() != destinationType.GetElementType())
+                        throw new MapperException("Unsupported mapping type");
 
             if (!sourceType.IsArray && sourceType.GetGenericTypeDefinition() != destinationType.GetGenericTypeDefinition())
                 throw new MapperException("Unsupported mapping type");
