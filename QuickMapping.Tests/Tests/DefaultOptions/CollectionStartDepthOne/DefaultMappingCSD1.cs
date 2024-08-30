@@ -207,5 +207,59 @@ public class DefaultMappingCSD1
 
         Assert.Equal(usersVM.Count(), users.Count());
     }
-  
-}
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_1_Primitives()
+    {
+        //Arrange
+
+        var integers = new List<int> { 1, 2, 3 };        
+        var enumerables = integers.AsEnumerable();
+        var queryables = integers.AsQueryable();
+        var readonlyObjects = (IReadOnlyCollection<int>)integers.AsReadOnly();
+
+        //Act
+
+        var integerObjects = _mapper.Map<List<int>, List<int>>(integers, 1);
+        var enumerableObjects = _mapper.Map<IEnumerable<int>, IEnumerable<int>>(enumerables, 1);
+        var queryableObjects = _mapper.Map<IQueryable<int>, IQueryable<int>>(queryables, 1);
+        var iReadonlyCollection = _mapper.Map<IReadOnlyCollection<int>, IReadOnlyCollection<int>>(readonlyObjects, 1);
+
+        //Assert
+
+        Assert.NotNull(integerObjects);
+        Assert.NotNull(enumerableObjects);
+        Assert.NotNull(queryableObjects);
+        Assert.NotNull(readonlyObjects);
+
+        using (var integersEnumerator = integers.GetEnumerator())
+        using (var integerObjectsEnumerator = integerObjects.GetEnumerator())
+        using (var enumerableObjectsEnumerator = enumerableObjects.GetEnumerator())
+        using (var queryableObjectsEnumerator = queryableObjects.GetEnumerator())
+        using (var iReadonlyCollectionEnumerator = iReadonlyCollection.GetEnumerator())
+        {
+            while (integersEnumerator.MoveNext() &&
+                   integerObjectsEnumerator.MoveNext() &&
+                   enumerableObjectsEnumerator.MoveNext() &&
+                   queryableObjectsEnumerator.MoveNext() &&
+                   iReadonlyCollectionEnumerator.MoveNext())
+            {
+                var integer = integersEnumerator.Current;
+                var integerObject = integerObjectsEnumerator.Current;
+                var enumerableObject = enumerableObjectsEnumerator.Current;
+                var queryableObject = queryableObjectsEnumerator.Current;
+                var readonlyObject = iReadonlyCollectionEnumerator.Current;
+
+                Assert.Equal(integerObject, integer);
+                Assert.Equal(enumerableObject, integer);
+                Assert.Equal(queryableObject, integer);
+                Assert.Equal(readonlyObject, integer);                
+            }
+        }
+
+        Assert.Equal(integers.Count, integerObjects.Count);
+        Assert.Equal(integers.Count, enumerableObjects.Count());
+        Assert.Equal(integers.Count, queryableObjects.Count());
+        Assert.Equal(integers.Count, iReadonlyCollection.Count);
+    }  
+  }
