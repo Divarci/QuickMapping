@@ -18,8 +18,7 @@ public static class IEnumerableMapper
         object source,
         object? destination,
         int depth,
-        MappingOptions options,
-        string previousProcess)
+        MappingOptions options)
     {
 
         Type? listType;
@@ -48,20 +47,15 @@ public static class IEnumerableMapper
             }
             else
             {
-                depth--;
-
                 var destinationElementObject = ObjectMapper.Map(
                 sourceElementType,
                 destinationElementType,
                 depth,
                 sourceElement,
                 options,
-                destination,
-                previousProcess);
+                destination);
 
                 addMethod.Invoke(list, [destinationElementObject]);
-
-                depth++;
             }
         }
         return list ??
