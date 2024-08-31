@@ -14,8 +14,7 @@ public static class ArrayMapper
        object source,
        object? destination,
        int depth,
-    MappingOptions options,
-       string previousProcess)
+       MappingOptions options)
     {       
         var sourceArray = (Array)source;
         
@@ -31,18 +30,13 @@ public static class ArrayMapper
             }
             else
             {
-                depth--;
-
                 var destinationElementObject = ObjectMapper.Map(
                     sourceType.GetElementType()!,
                     destinationType.GetElementType()!,
                     depth,
                     sourceArray.GetValue(i)!,
                     options,
-                    destination,
-                    previousProcess);
-
-                depth++;
+                    destination);
 
                 destinationArray.SetValue(destinationElementObject, i);
                 continue;

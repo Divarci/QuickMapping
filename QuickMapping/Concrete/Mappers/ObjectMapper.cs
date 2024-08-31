@@ -11,17 +11,13 @@ public static class ObjectMapper
        Type destinationType,
        int depth, object source,
        MappingOptions options,
-       object? destination = null,
-       string? previousProcess = null)
+       object? destination = null)
     {
         if (source is null)
             return null;
 
         if (depth <= 0)
-            return null!;
-
-        if (previousProcess is MapperDefaults.COLLECTION)
-            depth++;
+            return null!;       
 
         bool isCollection = typeof(IEnumerable)
             .IsAssignableFrom(sourceType) &&

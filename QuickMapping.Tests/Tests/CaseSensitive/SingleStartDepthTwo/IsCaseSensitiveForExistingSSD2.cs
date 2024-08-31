@@ -11,10 +11,10 @@ public class IsCaseSensitiveForExistingSSD2
     private readonly IQuickMapper _mapper;
 
     public IsCaseSensitiveForExistingSSD2() =>
-        _mapper = new QuickMapper(new MappingOptions()
-        {
-            IsSensitiveCase = false
-        });
+       _mapper = new QuickMapper(new MappingOptions()
+       {
+           IsSensitiveCase = false
+       });
 
     [Fact]
     public void Single_Start_Mapping_Depth_2_For_List()
@@ -43,9 +43,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -75,9 +76,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -107,9 +109,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -139,9 +142,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -171,9 +175,11 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
+
     }
 
     [Fact]
@@ -203,9 +209,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -235,9 +242,10 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -249,10 +257,9 @@ public class IsCaseSensitiveForExistingSSD2
         {
             DESCRIPTION = "Future Software Ltd",
             director = new() { fullname = "Jackie Chan" },
-            EmployeeS = new List<UserViewModelWithLowerCase> {
+            EmployeeS = new List<UserViewModelWithLowerCase>(){
                 new () { fullname = "Mel Gibson" },
-                new () { fullname = "Denise Gilbert" } }
-            .AsReadOnly()
+                new () { fullname = "Denise Gilbert" } }.AsReadOnly()
         };
 
         var futureLtd = Company<ReadOnlyCollection<User>>.CreateSingleCompany("Future Ltd", ListType.ReadonlyCollection);
@@ -269,8 +276,9 @@ public class IsCaseSensitiveForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 }

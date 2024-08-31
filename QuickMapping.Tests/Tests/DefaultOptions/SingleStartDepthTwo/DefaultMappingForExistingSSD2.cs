@@ -5,7 +5,7 @@ using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace QuickMapping.Tests.Tests.DefaultOptions.SingleStartDepthOne;
+namespace QuickMapping.Tests.Tests.DefaultOptions.SingleStartDepthTwo;
 public class DefaultMappingForExistingSSD2
 {
     private readonly IQuickMapper _mapper;
@@ -40,9 +40,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -72,9 +73,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -104,9 +106,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -136,9 +139,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -168,9 +172,11 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
+
     }
 
     [Fact]
@@ -200,9 +206,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -232,9 +239,10 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 
     [Fact]
@@ -246,10 +254,9 @@ public class DefaultMappingForExistingSSD2
         {
             Description = "Future Software Ltd",
             Director = new() { Fullname = "Jackie Chan" },
-            Employees = new List<UserViewModel>() {
+            Employees = new List<UserViewModel>(){
                 new () { Fullname = "Mel Gibson" },
-                new () { Fullname = "Denise Gilbert" } }
-            .AsReadOnly()
+                new () { Fullname = "Denise Gilbert" } }.AsReadOnly()
         };
 
         var futureLtd = Company<ReadOnlyCollection<User>>.CreateSingleCompany("Future Ltd", ListType.ReadonlyCollection);
@@ -266,8 +273,9 @@ public class DefaultMappingForExistingSSD2
         Assert.Same(company.Director, futureLtd.Director);
         Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
         Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
-            Assert.Null(employee);
+            Assert.NotNull(employee);
     }
 }

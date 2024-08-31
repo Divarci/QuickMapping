@@ -3,6 +3,7 @@ using QuickMapping.Concrete;
 using QuickMapping.Options;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.CaseSensitive.Models;
+using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
 
 namespace QuickMapping.Tests.Tests.CaseSensitive.SingleStartDepthTwo;
@@ -34,8 +35,12 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.EmployeeS.Count; i++)
+        {
+            Assert.NotNull(companyVM.EmployeeS[i]);
+            Assert.Equal(companyVM.EmployeeS[i].fullname, futureLtd.Employees[i].Fullname);
+        }
+
     }
 
     [Fact]
@@ -56,8 +61,11 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.EmployeeS.Count; i++)
+        {
+            Assert.NotNull(companyVM.EmployeeS[i]);
+            Assert.Equal(companyVM.EmployeeS[i].fullname, futureLtd.Employees[i].Fullname);
+        }
     }
 
     [Fact]
@@ -78,8 +86,11 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.EmployeeS.Count; i++)
+        {
+            Assert.NotNull(companyVM.EmployeeS[i]);
+            Assert.Equal(companyVM.EmployeeS[i].fullname, futureLtd.Employees[i].Fullname);
+        }
     }
 
     [Fact]
@@ -100,8 +111,18 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.EmployeeS.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.fullname, futureLtdEmployee.Fullname);
+            }
+        }
     }
 
     [Fact]
@@ -122,8 +143,19 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.EmployeeS.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -144,8 +176,19 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.EmployeeS.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -166,8 +209,19 @@ public class IsCaseSensitiveSSD2
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.EmployeeS.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.EmployeeS.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -186,9 +240,13 @@ public class IsCaseSensitiveSSD2
         Assert.NotNull(companyVM);
         Assert.Equal(companyVM.DESCRIPTION, futureLtd.Description);
         Assert.Equal(companyVM.director.fullname, futureLtd.Director!.Fullname);
-        Assert.Equal(companyVM.EmployeeS.Count(), futureLtd.Employees.Count());
+        Assert.Equal(companyVM.EmployeeS.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.EmployeeS)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.EmployeeS.Count; i++)
+        {
+            Assert.NotNull(companyVM.EmployeeS[i]);
+            Assert.Equal(companyVM.EmployeeS[i].fullname, futureLtd.Employees[i].Fullname);
+        }
+
     }
 }

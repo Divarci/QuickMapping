@@ -27,8 +27,7 @@ public static class IReadOnlyCollectionMapper
         object source,
         object? destination,
         int depth,
-        MappingOptions options,
-        string previousProcess)
+        MappingOptions options)
     {
         var listType = typeof(List<>)
             .MakeGenericType(destinationElementType);
@@ -50,20 +49,15 @@ public static class IReadOnlyCollectionMapper
             }
             else
             {
-                depth--;
-
                 var destinationElementObject = ObjectMapper.Map(
                 sourceElementType,
                 destinationElementType,
                 depth,
                 sourceElement,
                 options,
-                destination,
-                previousProcess);
+                destination);
 
                 addMethod.Invoke(list, [destinationElementObject]);
-
-                depth++;
             }
 
         }

@@ -68,8 +68,7 @@ public static class SingleUnitMapper
                     depth,
                     nestedValue,
                     options!,
-                    nestedDestination,
-                    MapperDefaults.SINGLE_UNIT);
+                    nestedDestination);
 
                 depth++;
 
