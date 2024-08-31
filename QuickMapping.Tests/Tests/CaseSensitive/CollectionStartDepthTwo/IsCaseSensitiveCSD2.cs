@@ -3,7 +3,6 @@ using QuickMapping.Concrete;
 using QuickMapping.Options;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.CaseSensitive.Models;
-using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
 
 namespace QuickMapping.Tests.Tests.CaseSensitive.CollectionStartDepthTwo;
@@ -31,7 +30,7 @@ public class IsCaseSensitiveCSD2
         //Assert
 
         Assert.NotNull(companyVM);
-        Assert.Equal(companyVM.Count, europeCompanies.Count);
+        Assert.Equal(companyVM.Count, europeCompanies.Count());
 
         for (int i = 0; i < companyVM.Count; i++)
         {
@@ -43,7 +42,7 @@ public class IsCaseSensitiveCSD2
             Assert.Equal(companyVM[i].EmployeeS.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].EmployeeS.Count; y++)
-                Assert.Null(companyVM[i].EmployeeS[y]);
+                Assert.Equal(companyVM[i].EmployeeS[y].fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -73,7 +72,7 @@ public class IsCaseSensitiveCSD2
             Assert.Equal(companyVM[i].EmployeeS.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].EmployeeS.Count; y++)
-                Assert.Null(companyVM[i].EmployeeS[y]);
+                Assert.Equal(companyVM[i].EmployeeS[y].fullname, europeCompanies[i].Employees[y].Fullname);
 
         }
     }
@@ -104,7 +103,7 @@ public class IsCaseSensitiveCSD2
             Assert.Equal(companyVM[i].EmployeeS.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].EmployeeS.Count; y++)
-                Assert.Null(companyVM[i].EmployeeS[y]);
+                Assert.Equal(companyVM[i].EmployeeS[y].fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -147,7 +146,7 @@ public class IsCaseSensitiveCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -193,7 +192,7 @@ public class IsCaseSensitiveCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -239,7 +238,7 @@ public class IsCaseSensitiveCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -276,7 +275,7 @@ public class IsCaseSensitiveCSD2
                 Assert.Equal(companyVMItem.director.fullname, europeCompany.Director.Fullname);
                 Assert.NotNull(companyVMItem.EmployeeS);
                 Assert.Equal(companyVMItem.EmployeeS.Count, europeCompany.Employees.Count);
-
+                
                 using (var europeEmployeesEnumerator = europeCompany.Employees.GetEnumerator())
                 using (var companyVMEmployeesEnumerator = companyVMItem.EmployeeS.GetEnumerator())
                 {
@@ -285,7 +284,7 @@ public class IsCaseSensitiveCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -318,7 +317,7 @@ public class IsCaseSensitiveCSD2
             Assert.Equal(companyVM[i].EmployeeS.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].EmployeeS.Count; y++)
-                Assert.Null(companyVM[i].EmployeeS[y]);
+                Assert.Equal(companyVM[i].EmployeeS[y].fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -361,11 +360,49 @@ public class IsCaseSensitiveCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
                     }
                 }
             }
         }
     }
 
+    [Fact]
+    public void Collection_Start_Mapping_Depth_2_Array()
+    {
+        //Arrange       
+        var complexArrayWithCollection = new[] {
+            Company<List<User>>.CreateMultiCompanyWith_List(),
+            Company<List<User>>.CreateMultiCompanyWith_List() };
+
+        //Act       
+        var complexMapperWithCollection = _mapper.Map<List<Company<List<User>>>[], List<CompanyViewModelWithLowerCase<List<UserViewModelWithLowerCase>>>[]>
+            (complexArrayWithCollection, 2);
+
+        //Assert       
+        Assert.NotNull(complexMapperWithCollection);
+        for (int i = 0; i < complexMapperWithCollection.Length; i++)
+        {
+            Assert.Equal(complexMapperWithCollection[i].Count, complexArrayWithCollection[i].Count);
+            for (int y = 0; y < complexMapperWithCollection[i].Count; y++)
+            {
+                Assert.Equal(complexMapperWithCollection[i][y].DESCRIPTION, complexArrayWithCollection[i][y].Description);
+
+                Assert.Equal(
+                    complexMapperWithCollection[i][y].director.fullname,
+                    complexArrayWithCollection[i][y].Director.Fullname);
+
+                Assert.Equal(
+                    complexMapperWithCollection[i][y].EmployeeS.Count,
+                    complexArrayWithCollection[i][y].Employees.Count);
+
+                for (int z = 0; z < complexMapperWithCollection[i][y].EmployeeS.Count; z++)
+                {
+                    Assert.Equal(
+                        complexMapperWithCollection[i][y].EmployeeS[z].fullname,
+                        complexArrayWithCollection[i][y].Employees[z].Fullname);
+                }
+            }
+        }
+    }
 }

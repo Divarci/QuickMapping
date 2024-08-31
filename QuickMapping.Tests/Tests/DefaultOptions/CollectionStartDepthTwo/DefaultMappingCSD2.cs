@@ -1,6 +1,5 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
-using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -27,7 +26,7 @@ public class DefaultMappingCSD2
         //Assert
 
         Assert.NotNull(companyVM);
-        Assert.Equal(companyVM.Count, europeCompanies.Count);
+        Assert.Equal(companyVM.Count, europeCompanies.Count());
 
         for (int i = 0; i < companyVM.Count; i++)
         {
@@ -39,7 +38,7 @@ public class DefaultMappingCSD2
             Assert.Equal(companyVM[i].Employees.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].Employees.Count; y++)
-                Assert.Null(companyVM[i].Employees[y]);
+                Assert.Equal(companyVM[i].Employees[y].Fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -69,10 +68,11 @@ public class DefaultMappingCSD2
             Assert.Equal(companyVM[i].Employees.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].Employees.Count; y++)
-                Assert.Null(companyVM[i].Employees[y]);
+                Assert.Equal(companyVM[i].Employees[y].Fullname, europeCompanies[i].Employees[y].Fullname);
 
         }
     }
+
     [Fact]
     public void Collection_Start_Mapping_Depth_2_For_IList()
     {
@@ -99,7 +99,7 @@ public class DefaultMappingCSD2
             Assert.Equal(companyVM[i].Employees.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].Employees.Count; y++)
-                Assert.Null(companyVM[i].Employees[y]);
+                Assert.Equal(companyVM[i].Employees[y].Fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -142,12 +142,13 @@ public class DefaultMappingCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
                     }
                 }
             }
         }
     }
+
     [Fact]
     public void Collection_Start_Mapping_Depth_2_For_IEnumerable()
     {
@@ -187,7 +188,7 @@ public class DefaultMappingCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -233,7 +234,7 @@ public class DefaultMappingCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -279,7 +280,7 @@ public class DefaultMappingCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
                     }
                 }
             }
@@ -312,7 +313,7 @@ public class DefaultMappingCSD2
             Assert.Equal(companyVM[i].Employees.Count, europeCompanies[i].Employees.Count);
 
             for (int y = 0; y < companyVM[i].Employees.Count; y++)
-                Assert.Null(companyVM[i].Employees[y]);
+                Assert.Equal(companyVM[i].Employees[y].Fullname, europeCompanies[i].Employees[y].Fullname);
         }
     }
 
@@ -355,10 +356,52 @@ public class DefaultMappingCSD2
                         var europeEmployee = europeEmployeesEnumerator.Current;
                         var companyVMEmployee = companyVMEmployeesEnumerator.Current;
 
-                        Assert.Null(companyVMEmployee);
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
                     }
                 }
             }
         }
-    }   
+    }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_2_Array()
+    {
+        //Arrange      
+        var complexArrayWithCollection = new[] {
+            Company<List<User>>.CreateMultiCompanyWith_List(),
+            Company<List<User>>.CreateMultiCompanyWith_List() };
+
+        //Act       
+        var complexMapperWithCollection = _mapper.Map<List<Company<List<User>>>[], List<CompanyViewModel<List<UserViewModel>>>[]>
+            (complexArrayWithCollection, 2);
+
+        //Assert
+        //
+        Assert.NotNull(complexMapperWithCollection);
+        for (int i = 0; i < complexMapperWithCollection.Length; i++)
+        {
+            Assert.Equal(complexMapperWithCollection[i].Count, complexArrayWithCollection[i].Count);
+            for (int y = 0; y < complexMapperWithCollection[i].Count; y++)
+            {
+                Assert.Equal(complexMapperWithCollection[i][y].Description, complexArrayWithCollection[i][y].Description);
+                Assert.NotNull(complexMapperWithCollection[i][y].Director);
+                Assert.Equal(
+                    complexMapperWithCollection[i][y].Director.Fullname,
+                    complexArrayWithCollection[i][y].Director.Fullname);
+
+                Assert.NotNull(complexMapperWithCollection[i][y].Employees);
+                Assert.Equal(
+                    complexMapperWithCollection[i][y].Employees.Count,
+                    complexMapperWithCollection[i][y].Employees.Count);
+
+                for (int j = 0; j < complexMapperWithCollection[i][y].Employees.Count; j++)
+                {
+                    Assert.Equal(
+                        complexMapperWithCollection[i][y].Employees[j].Fullname,
+                        complexArrayWithCollection[i][y].Employees[j].Fullname);
+                }
+            }
+        }
+    }
+
 }
