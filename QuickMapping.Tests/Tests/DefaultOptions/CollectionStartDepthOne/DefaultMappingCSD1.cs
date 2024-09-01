@@ -1,6 +1,7 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
 using QuickMapping.Exceptions;
+using QuickMapping.Extensions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -363,5 +364,42 @@ public class DefaultMappingCSD1
                 Assert.Null(complexMapperWithCollection[i][y].Employees);
             }
         }
+    }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_1_IQueryable_Extension()
+    {
+        //Arrange
+        var users = User.CreateMultiUserWith_IQueryable();
+
+        //Act
+        var usersVM = users.MapTo<UserViewModel>(1,null);
+        var newQuery = usersVM.Where(x => x.Fullname.StartsWith('J'));
+        var secondQuery = newQuery.Select(x => new
+        {
+            Greeting = $"{x.Fullname.First()}{x.Fullname.Last()}"
+        });
+
+        //Assert
+
+        Assert.NotNull(usersVM);
+
+        using (var usersEnumerator = users.GetEnumerator())
+        using (var usersVMEnumerator = usersVM.GetEnumerator())
+        {
+            while (usersEnumerator.MoveNext() && usersVMEnumerator.MoveNext())
+            {
+                var user = usersEnumerator.Current;
+                var userVM = usersVMEnumerator.Current;
+
+                Assert.NotNull(user);
+                Assert.Equal(user.Fullname, userVM.Fullname);
+            }
+        }
+
+        Assert.Equal(usersVM.Count(), users.Count());
+        Assert.NotNull(newQuery);       
+        Assert.Equal(2,newQuery.Count());
+        Assert.True(secondQuery.Any(x => x.Greeting == "Je"));
     }
 }
