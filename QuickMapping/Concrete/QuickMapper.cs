@@ -6,12 +6,12 @@ using QuickMapping.Options;
 namespace QuickMapping.Concrete;
 public class QuickMapper : IQuickMapper
 {
-    private readonly MappingOptions? _options;
+    public MappingOptions? configurations {  get; }
 
     public QuickMapper() { }
 
     public QuickMapper(MappingOptions options) =>
-        _options = options;
+        configurations = options;
 
     public Destination Map<Source, Destination>(Source source, int depth)
     {
@@ -26,7 +26,7 @@ public class QuickMapper : IQuickMapper
             typeof(Destination), 
             depth, 
             source,
-            _options!);
+            configurations!);
 
         return (Destination)mappedObject!;
     }
@@ -46,8 +46,8 @@ public class QuickMapper : IQuickMapper
             typeof(Source), 
             typeof(Destination), 
             depth, 
-            source, 
-            _options!,
+            source,
+            configurations!,
             destination);
 
         return (Destination)mappedObject!;

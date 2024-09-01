@@ -2,6 +2,7 @@
 using QuickMapping.Options;
 using QuickMapping.Validations;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace QuickMapping.Extensions;
 public static class MapperExtensions
@@ -18,7 +19,7 @@ public static class MapperExtensions
     public static IQueryable<DestinationElement> MapTo<DestinationElement>(
         this IQueryable source,
         int depth,
-        MappingOptions? options)
+        MappingOptions? options = null)
     {
         if (source is null)
             throw new MapperException("Source can not be null");
@@ -32,7 +33,8 @@ public static class MapperExtensions
             parameter,
             sourceType,
             destinationType,
-            depth);
+            depth,
+            options!);
 
         var lambda = Expression.Lambda(memberInitExpression, parameter);
 
@@ -50,15 +52,20 @@ public static class MapperExtensions
         Expression parameter,
         Type sourceType,
         Type destinationType,
-        int depth)
+        int depth,
+        MappingOptions? options)
     {
         var sourceProperties = sourceType.GetProperties();
         var destinationProperties = destinationType.GetProperties();
 
         List<MemberAssignment?> bindings = destinationProperties
             .Select(destProp =>
-        {
-            var sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name == destProp.Name);
+        {      
+            PropertyInfo? sourceProp;
+            if(options is not null && !options.IsSensitiveCase)            
+                sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name.ToLower() == destProp.Name.ToLower());            
+            else            
+                sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name == destProp.Name);            
 
             if (sourceProp is null)
                 return null;
@@ -84,12 +91,16 @@ public static class MapperExtensions
                     nestedParameter,
                     nestedSourceType,
                     nestedDestinationType,
-                    depth);
+                    depth,
+                    options);
 
                 depth++;
 
+                if (!typeof(IQueryable).IsAssignableFrom(sourceProp.PropertyType) || !typeof(IQueryable).IsAssignableFrom(destProp.PropertyType))
+                    throw new MapperException("Parameters must be IQueryable");
+
                 var selectExpression = Expression.Call(
-                    typeof(Enumerable),
+                    typeof(Queryable),
                     "Select",
                     [nestedSourceType, nestedDestinationType],
                     Expression.Property(parameter, sourceProp),
@@ -109,7 +120,8 @@ public static class MapperExtensions
                     Expression.Property(parameter, sourceProp),
                     sourceProp.PropertyType,
                     destProp.PropertyType,
-                    depth);
+                    depth,
+                    options);
 
                 depth++;
 

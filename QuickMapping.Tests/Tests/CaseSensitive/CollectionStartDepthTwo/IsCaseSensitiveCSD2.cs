@@ -1,8 +1,10 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Extensions;
 using QuickMapping.Options;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.CaseSensitive.Models;
+using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
 
 namespace QuickMapping.Tests.Tests.CaseSensitive.CollectionStartDepthTwo;
@@ -404,5 +406,59 @@ public class IsCaseSensitiveCSD2
                 }
             }
         }
+    }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_2_IQueryable_Extension()
+    {
+        //Arrange
+        var europeCompanies = Company<IQueryable<User>>.CreateMultiCompanyWith_IQueryable();
+
+        //Act
+        var companyVM = europeCompanies.MapTo<CompanyViewModelWithLowerCase<IQueryable<UserViewModelWithLowerCase>>>(2, _mapper.configurations);
+        var newQuery = companyVM.FirstOrDefault(x => x.director.fullname == "Mason Berry");
+        var secondQuery = companyVM
+            .SelectMany(x => x.EmployeeS)
+            .Select(x => new
+            {
+                Greeting = $"{x.fullname.First()}{x.fullname.Last()}"
+            });
+        //Assert
+
+        Assert.NotNull(companyVM);
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+
+        using (var europeCompaniesEnumerator = europeCompanies.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.GetEnumerator())
+        {
+            while (europeCompaniesEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var europeCompany = europeCompaniesEnumerator.Current;
+                var companyVMItem = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMItem);
+                Assert.Equal(companyVMItem.DESCRIPTION, europeCompany.Description);
+                Assert.NotNull(companyVMItem.director);
+                Assert.Equal(companyVMItem.director.fullname, europeCompany.Director.Fullname);
+                Assert.NotNull(companyVMItem.EmployeeS);
+                Assert.Equal(companyVMItem.EmployeeS.Count(), europeCompany.Employees.Count());
+
+                using (var europeEmployeesEnumerator = europeCompany.Employees.GetEnumerator())
+                using (var companyVMEmployeesEnumerator = companyVMItem.EmployeeS.GetEnumerator())
+                {
+                    while (europeEmployeesEnumerator.MoveNext() && companyVMEmployeesEnumerator.MoveNext())
+                    {
+                        var europeEmployee = europeEmployeesEnumerator.Current;
+                        var companyVMEmployee = companyVMEmployeesEnumerator.Current;
+
+                        Assert.Equal(companyVMEmployee.fullname, europeEmployee.Fullname);
+                    }
+                }
+            }
+        }
+
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+        Assert.NotNull(newQuery);
+        Assert.True(secondQuery.Any(x => x.Greeting == "Je"));
     }
 }

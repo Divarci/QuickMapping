@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Extensions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -402,6 +403,60 @@ public class DefaultMappingCSD2
                 }
             }
         }
+    }
+
+    [Fact]
+    public void Collection_Start_Mapping_Depth_2_IQueryable_Extension()
+    {
+        //Arrange
+        var europeCompanies = Company<IQueryable<User>>.CreateMultiCompanyWith_IQueryable();
+        
+        //Act
+        var companyVM = europeCompanies.MapTo<CompanyViewModel<IQueryable<UserViewModel>>>(2, null);
+        var newQuery = companyVM.FirstOrDefault(x => x.Director.Fullname == "Mason Berry");
+        var secondQuery = companyVM
+            .SelectMany(x => x.Employees)
+            .Select(x => new
+            {
+                Greeting = $"{x.Fullname.First()}{x.Fullname.Last()}"
+            });
+        //Assert
+
+        Assert.NotNull(companyVM);
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+
+        using (var europeCompaniesEnumerator = europeCompanies.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.GetEnumerator())
+        {
+            while (europeCompaniesEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var europeCompany = europeCompaniesEnumerator.Current;
+                var companyVMItem = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMItem);
+                Assert.Equal(companyVMItem.Description, europeCompany.Description);
+                Assert.NotNull(companyVMItem.Director);
+                Assert.Equal(companyVMItem.Director.Fullname, europeCompany.Director.Fullname);
+                Assert.NotNull(companyVMItem.Employees);
+                Assert.Equal(companyVMItem.Employees.Count(), europeCompany.Employees.Count());
+
+                using (var europeEmployeesEnumerator = europeCompany.Employees.GetEnumerator())
+                using (var companyVMEmployeesEnumerator = companyVMItem.Employees.GetEnumerator())
+                {
+                    while (europeEmployeesEnumerator.MoveNext() && companyVMEmployeesEnumerator.MoveNext())
+                    {
+                        var europeEmployee = europeEmployeesEnumerator.Current;
+                        var companyVMEmployee = companyVMEmployeesEnumerator.Current;
+
+                        Assert.Equal(companyVMEmployee.Fullname, europeEmployee.Fullname);
+                    }
+                }
+            }
+        }
+
+        Assert.Equal(companyVM.Count(), europeCompanies.Count());
+        Assert.NotNull(newQuery);
+        Assert.True(secondQuery.Any(x => x.Greeting == "Je"));
     }
 
 }
