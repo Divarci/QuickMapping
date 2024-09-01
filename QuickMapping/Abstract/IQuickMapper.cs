@@ -1,4 +1,6 @@
-﻿namespace QuickMapping.Abstract;
+﻿using QuickMapping.Options;
+
+namespace QuickMapping.Abstract;
 public interface IQuickMapper
 {
     /// <summary>
@@ -21,4 +23,6 @@ public interface IQuickMapper
     /// </summary>
     /// <returns>The updated<strong>mapped object</strong>.</returns>
     Destination Map<Source, Destination>(Source source, Destination destination, int depth);
+
+    public MappingOptions? configurations { get; }
 }

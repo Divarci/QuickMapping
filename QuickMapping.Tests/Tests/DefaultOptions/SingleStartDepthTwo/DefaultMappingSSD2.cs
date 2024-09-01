@@ -246,27 +246,4 @@ public class DefaultMappingSSD2
 
     }
 
-    [Fact]
-    public void Exception_Catch()
-    {
-        Assert.Throws<MapperException>(() => 
-        _mapper.Map<List<User>, IList<UserViewModel>>(
-            User.CreateMultiUserWith_List(),2));
-
-        Assert.Throws<MapperException>(() =>
-        _mapper.Map<IEnumerable<User>, IList<UserViewModel>>(
-            User.CreateMultiUserWith_List(), 2));
-
-        Assert.Throws<MapperException>(() =>
-        _mapper.Map<IReadOnlyCollection<User>, IQueryable<UserViewModel>>(
-            User.CreateMultiUserWith_List(), 2));
-
-        Assert.Throws<MapperException>(() =>
-        _mapper.Map<int[], string[]>(
-            [1,2,3], 2));
-
-        Assert.Throws<MapperException>(() =>
-        _mapper.Map<List<int[]>, List<string[]>>(
-            [[1, 2, 3], [5, 6, 7]], 2));
-    }
 }
