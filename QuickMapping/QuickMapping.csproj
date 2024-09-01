@@ -12,7 +12,7 @@
     <PackageIcon></PackageIcon>
     <RepositoryUrl>https://github.com/Divarci/QuickMapping.git</RepositoryUrl>
     <PackageReleaseNotes>Initial Release Test</PackageReleaseNotes>
-    <Version>$(VersionPrefix)1.0.5</Version>
+    <Version>$(VersionPrefix)1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>

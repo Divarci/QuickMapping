@@ -11,50 +11,31 @@ namespace QuickMapping.Tests.Tests
     {
         private readonly IQuickMapper _mapper;
 
-        public Experimental()=>        
+        public Experimental() =>
             _mapper = new QuickMapper();
 
         [Fact]
         public void PrirmitiveCollectonMap()
         {
             //Arrange
-            var student = new Student()
-            {
-                Name = "Ali",
-                Surname = "Yildiz",
-                Number = 14,
-                Lessons = ["Matematik", "Edebiyat"],
-                Numbers = new List<int>() { 1, 3, 5 }.AsReadOnly(),
-                Friends = [new() { Fullname ="Cenk"}, new() { Fullname="Berk"}]
+            int[] testArray = [1, 2, 3, 4];
+            User[] testARray2 = [User.CreateSingleUser("Cenk"), User.CreateSingleUser("Mahir")];
+            User[] testARray3 = [User.CreateSingleUser("maho"), User.CreateSingleUser("cano")];
+            List<User[]> hobaa = [testARray2, testARray3];
+            
 
-            };
-
-            var user = Company<IEnumerable<User>>.CreateMultiCompanyWith_IEnumerable().AsQueryable();
+            //List<int[]> arrayList = [testArray, testArray2, testArray3];
 
             //Act
 
-            //var dto = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(user, 3).AsQueryable();
+            //var mappedObject = _mapper.Map<List<int[]>, List<int[]>>(arrayList, 1);
 
-            //var test = user.MapTo<Company<IEnumerable<User>>, CompanyViewModel<IEnumerable<UserViewModel>>>(4);
-            //string test2 = test.GetType().Name;
-        }
-        
-        class Student
-        {
-            public string Name { get; set; }
-            public string Surname { get; set; }
-            public int Number { get; set; }
-            public IReadOnlyCollection<string> Lessons { get; set; }
-            public ReadOnlyCollection<int> Numbers { get; set; }
-            public IList<UserViewModel> Friends { get; set; }
+            var test1 = _mapper.Map<int[], int[]>(testArray, 2);
+            var test2 = _mapper.Map<User[], UserViewModel[]>(testARray2, 2);
+            var test3 = _mapper.Map<List<User[]>, List<UserViewModel[]>>(hobaa, 3);
+
+
         }
 
-        class StudentDto
-        {
-            public string Name { get; set; }
-            public IReadOnlyCollection<string> Lessons { get; set; }
-            public ReadOnlyCollection<int> Numbers { get; set; }
-            public IList<UserViewModel> Friends { get; set; }
-        }
     }
 }

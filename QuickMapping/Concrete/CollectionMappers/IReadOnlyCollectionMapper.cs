@@ -1,6 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -26,8 +27,7 @@ public static class IReadOnlyCollectionMapper
         object source,
         object? destination,
         int depth,
-        MappingOptions options,
-        string previousProcess)
+        MappingOptions options)
     {
         var listType = typeof(List<>)
             .MakeGenericType(destinationElementType);
@@ -42,27 +42,22 @@ public static class IReadOnlyCollectionMapper
         foreach (var sourceElement in iterateSource)
         {
 
-            if (PrimitiveMapper.Validate(destinationElementType) &&
-            PrimitiveMapper.Validate(sourceElementType))
+            if (IsPrimitive.Check(destinationElementType) &&
+                IsPrimitive.Check(sourceElementType))
             {
                 addMethod.Invoke(list, [sourceElement]);
             }
             else
             {
-                depth--;
-
                 var destinationElementObject = ObjectMapper.Map(
                 sourceElementType,
                 destinationElementType,
                 depth,
                 sourceElement,
                 options,
-                destination,
-                previousProcess);
+                destination);
 
                 addMethod.Invoke(list, [destinationElementObject]);
-
-                depth++;
             }
 
         }

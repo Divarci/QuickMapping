@@ -1,29 +1,32 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Options;
 using QuickMapping.Tests.Entities;
-using QuickMapping.Tests.Tests.DefaultOptions.Models;
-using System.Collections.Generic;
+using QuickMapping.Tests.Tests.CaseSensitive.Models;
 using System.Collections.ObjectModel;
 
-namespace QuickMapping.Tests.Tests.DefaultOptions.SingleStartDepthTwo;
-public class DefaultMappingForExistingSSD2
+namespace QuickMapping.Tests.Tests.CaseSensitive.SingleStartDepthTwo;
+public class IsCaseSensitiveForExistingSSD2
 {
     private readonly IQuickMapper _mapper;
 
-    public DefaultMappingForExistingSSD2() =>
-       _mapper = new QuickMapper();
+    public IsCaseSensitiveForExistingSSD2() =>
+       _mapper = new QuickMapper(new MappingOptions()
+       {
+           IsSensitiveCase = false
+       });
 
     [Fact]
     public void Single_Start_Mapping_Depth_2_For_List()
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<List<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<List<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<List<User>>.CreateSingleCompany("Future Ltd", ListType.List);
@@ -36,10 +39,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -51,12 +54,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<Collection<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<Collection<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<Collection<User>>.CreateSingleCompany("Future Ltd", ListType.Collection);
@@ -69,10 +72,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -84,12 +87,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<IList<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<IList<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<IList<User>>.CreateSingleCompany("Future Ltd", ListType.IList);
@@ -102,10 +105,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -117,12 +120,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<ICollection<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<ICollection<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<ICollection<User>>.CreateSingleCompany("Future Ltd", ListType.ICollection);
@@ -135,10 +138,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count, futureLtd.Employees.Count);
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count, futureLtd.Employees.Count);
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -150,12 +153,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<IEnumerable<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<IEnumerable<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<IEnumerable<User>>.CreateSingleCompany("Future Ltd", ListType.IEnumerable);
@@ -168,10 +171,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -184,12 +187,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<IReadOnlyCollection<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<IReadOnlyCollection<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<IReadOnlyCollection<User>>.CreateSingleCompany("Future Ltd", ListType.IReadonlyCollection);
@@ -202,10 +205,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -217,12 +220,12 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<IReadOnlyList<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<IReadOnlyList<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = [new () { Fullname = "Mel Gibson" },
-                         new () { Fullname = "Denise Gilbert" }]
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = [new () { fullname = "Mel Gibson" },
+                         new () { fullname = "Denise Gilbert" }]
         };
 
         var futureLtd = Company<IReadOnlyList<User>>.CreateSingleCompany("Future Ltd", ListType.IReadonlyList);
@@ -235,10 +238,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)
@@ -250,13 +253,13 @@ public class DefaultMappingForExistingSSD2
     {
         //Arrange
 
-        var newFutureLtd = new CompanyViewModel<ReadOnlyCollection<UserViewModel>>()
+        var newFutureLtd = new CompanyViewModelWithLowerCase<ReadOnlyCollection<UserViewModelWithLowerCase>>()
         {
-            Description = "Future Software Ltd",
-            Director = new() { Fullname = "Jackie Chan" },
-            Employees = new List<UserViewModel>(){
-                new () { Fullname = "Mel Gibson" },
-                new () { Fullname = "Denise Gilbert" } }.AsReadOnly()
+            DESCRIPTION = "Future Software Ltd",
+            director = new() { fullname = "Jackie Chan" },
+            EmployeeS = new List<UserViewModelWithLowerCase>(){
+                new () { fullname = "Mel Gibson" },
+                new () { fullname = "Denise Gilbert" } }.AsReadOnly()
         };
 
         var futureLtd = Company<ReadOnlyCollection<User>>.CreateSingleCompany("Future Ltd", ListType.ReadonlyCollection);
@@ -269,10 +272,10 @@ public class DefaultMappingForExistingSSD2
 
         Assert.NotNull(company);
         Assert.Same(company, futureLtd);
-        Assert.Equal(newFutureLtd.Description, futureLtd.Description);
+        Assert.Equal(newFutureLtd.DESCRIPTION, futureLtd.Description);
         Assert.Same(company.Director, futureLtd.Director);
-        Assert.Equal(newFutureLtd.Director.Fullname, futureLtd.Director.Fullname);
-        Assert.Equal(newFutureLtd.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Equal(newFutureLtd.director.fullname, futureLtd.Director.Fullname);
+        Assert.Equal(newFutureLtd.EmployeeS.Count(), futureLtd.Employees.Count());
         Assert.Same(company.Employees, futureLtd.Employees);
 
         foreach (var employee in futureLtd.Employees)

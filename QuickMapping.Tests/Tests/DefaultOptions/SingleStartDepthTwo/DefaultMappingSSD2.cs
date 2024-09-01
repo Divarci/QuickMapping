@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
+using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
@@ -30,8 +31,12 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.Employees.Count; i++)
+        {
+            Assert.NotNull(companyVM.Employees[i]);
+            Assert.Equal(companyVM.Employees[i].Fullname, futureLtd.Employees[i].Fullname);
+        }
+
     }
 
     [Fact]
@@ -52,8 +57,11 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.Employees.Count; i++)
+        {
+            Assert.NotNull(companyVM.Employees[i]);
+            Assert.Equal(companyVM.Employees[i].Fullname, futureLtd.Employees[i].Fullname);
+        }
     }
 
     [Fact]
@@ -74,8 +82,11 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.Employees.Count; i++)
+        {
+            Assert.NotNull(companyVM.Employees[i]);
+            Assert.Equal(companyVM.Employees[i].Fullname, futureLtd.Employees[i].Fullname);
+        }
     }
 
     [Fact]
@@ -96,8 +107,18 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.Employees.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.Fullname, futureLtdEmployee.Fullname);
+            }
+        }
     }
 
     [Fact]
@@ -118,8 +139,19 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.Employees.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.Fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -140,8 +172,19 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.Employees.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.Fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -162,8 +205,19 @@ public class DefaultMappingSSD2
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
         Assert.Equal(companyVM.Employees.Count(), futureLtd.Employees.Count());
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        using (var futureLtdEnumerator = futureLtd.Employees.GetEnumerator())
+        using (var companyVMEnumerator = companyVM.Employees.GetEnumerator())
+        {
+            while (futureLtdEnumerator.MoveNext() && companyVMEnumerator.MoveNext())
+            {
+                var futureLtdEmployee = futureLtdEnumerator.Current;
+                var companyVMEmployee = companyVMEnumerator.Current;
+
+                Assert.NotNull(companyVMEmployee);
+                Assert.Equal(companyVMEmployee.Fullname, futureLtdEmployee.Fullname);
+            }
+        }
+
     }
 
     [Fact]
@@ -182,9 +236,14 @@ public class DefaultMappingSSD2
         Assert.NotNull(companyVM);
         Assert.Equal(companyVM.Description, futureLtd.Description);
         Assert.Equal(companyVM.Director.Fullname, futureLtd.Director!.Fullname);
-        Assert.Equal(companyVM.Employees.Count(), futureLtd.Employees.Count());
+        Assert.Equal(companyVM.Employees.Count, futureLtd.Employees.Count);
 
-        foreach (var employee in companyVM.Employees)
-            Assert.Null(employee);
+        for (int i = 0; i < companyVM.Employees.Count; i++)
+        {
+            Assert.NotNull(companyVM.Employees[i]);
+            Assert.Equal(companyVM.Employees[i].Fullname, futureLtd.Employees[i].Fullname);
+        }
+
     }
+
 }

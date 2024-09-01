@@ -1,3 +1,4 @@
+
 # QuickMapping
 
 QuickMapping is a lightweight mapping library for .NET projects. This repository is open for contributions and feedback as it is a new project and may have some bugs or issues. 
@@ -17,7 +18,6 @@ You can install QuickMapping via NuGet Package Manager or by using the .NET CLI.
 ### Using .NET CLI
 
 Open a terminal or command prompt and run the following command:
-
 ```
 dotnet add package QuickMapping --version 1.0.5
 ```
@@ -84,20 +84,12 @@ var query = dbData.MapTo<Data,DataViewModel>(3, options) //IQueryable<DataViewMo
 ```
 ## Unsupported Typed
 
-1.  Dictionary Mapper
-2.  Array Mapper
+Dictionary and Key-Value Pairs are unsupported and will be available V1.0.7
 
-These features will be available V1.0.6
+## What will be available V1.0.7 
 
-## Contributing
-We welcome contributions from the community! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request. Here’s how you can contribute:
-
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature-[branchname]`).
-3.  Make your changes.
-4.  Commit your changes (`git commit -am '[feature description]'`).
-5.  Push to the branch (`git push origin feature-[branchname]`).
-6.  Open a pull request on GitHub.
+1- Dictionary and Key-Value Pairs mapping
+2- Type conversion options
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.

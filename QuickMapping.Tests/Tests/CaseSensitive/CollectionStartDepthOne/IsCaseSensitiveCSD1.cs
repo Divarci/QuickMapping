@@ -2,17 +2,22 @@
 using QuickMapping.Concrete;
 using QuickMapping.Exceptions;
 using QuickMapping.Extensions;
+using QuickMapping.Options;
 using QuickMapping.Tests.Entities;
+using QuickMapping.Tests.Tests.CaseSensitive.Models;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
 
-namespace QuickMapping.Tests.Tests.DefaultOptions.CollectionStartDepthOne;
-public class DefaultMappingCSD1
+namespace QuickMapping.Tests.Tests.CaseSensitive.CollectionStartDepthOne;
+public class IsCaseSensitiveCSD1
 {
     private readonly IQuickMapper _mapper;
 
-    public DefaultMappingCSD1() =>
-       _mapper = new QuickMapper();
+    public IsCaseSensitiveCSD1() =>
+        _mapper = new QuickMapper(new MappingOptions()
+        {
+            IsSensitiveCase = false
+        });
 
     [Fact]
     public void Collection_Start_Mapping_Depth_1_For_List()
@@ -23,7 +28,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<List<User>, List<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<List<User>, List<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -32,7 +37,7 @@ public class DefaultMappingCSD1
         for (int i = 0; i < usersVM.Count; i++)
         {
             Assert.NotNull(usersVM[i]);
-            Assert.Equal(usersVM[i].Fullname, users[i].Fullname);
+            Assert.Equal(usersVM[i].fullname, users[i].Fullname);
         }
 
         Assert.Equal(usersVM.Count, users.Count);
@@ -48,7 +53,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<Collection<User>, Collection<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<Collection<User>, Collection<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -57,7 +62,7 @@ public class DefaultMappingCSD1
         for (int i = 0; i < usersVM.Count; i++)
         {
             Assert.NotNull(usersVM[i]);
-            Assert.Equal(usersVM[i].Fullname, users[i].Fullname);
+            Assert.Equal(usersVM[i].fullname, users[i].Fullname);
         }
 
         Assert.Equal(usersVM.Count, users.Count);
@@ -72,7 +77,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<IList<User>, IList<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<IList<User>, IList<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -81,7 +86,7 @@ public class DefaultMappingCSD1
         for (int i = 0; i < usersVM.Count; i++)
         {
             Assert.NotNull(usersVM[i]);
-            Assert.Equal(usersVM[i].Fullname, users[i].Fullname);
+            Assert.Equal(usersVM[i].fullname, users[i].Fullname);
         }
 
         Assert.Equal(usersVM.Count, users.Count);
@@ -96,7 +101,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<ICollection<User>, ICollection<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<ICollection<User>, ICollection<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -111,7 +116,7 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
@@ -127,7 +132,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModelWithLowerCase>>(users, 1);
 
         //Act & Assert
 
@@ -146,7 +151,7 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
@@ -162,7 +167,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<IReadOnlyCollection<User>, IReadOnlyCollection<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<IReadOnlyCollection<User>, IReadOnlyCollection<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -177,7 +182,7 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
@@ -193,7 +198,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<IReadOnlyList<User>, IReadOnlyList<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<IReadOnlyList<User>, IReadOnlyList<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -208,7 +213,7 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
@@ -224,7 +229,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<ReadOnlyCollection<User>, ReadOnlyCollection<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<ReadOnlyCollection<User>, ReadOnlyCollection<UserViewModelWithLowerCase>>(users, 1);
 
         //Assert
 
@@ -233,7 +238,7 @@ public class DefaultMappingCSD1
         for (int i = 0; i < usersVM.Count; i++)
         {
             Assert.NotNull(usersVM[i]);
-            Assert.Equal(usersVM[i].Fullname, users[i].Fullname);
+            Assert.Equal(usersVM[i].fullname, users[i].Fullname);
         }
 
         Assert.Equal(usersVM.Count(), users.Count());
@@ -248,7 +253,7 @@ public class DefaultMappingCSD1
 
         //Act
 
-        var usersVM = _mapper.Map<IQueryable<User>, IQueryable<UserViewModel>>(users, 1);
+        var usersVM = _mapper.Map<IQueryable<User>, IQueryable<UserViewModelWithLowerCase>>(users, 1);
 
 
         //Assert
@@ -264,66 +269,11 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
         Assert.Equal(usersVM.Count(), users.Count());
-    }
-
-    [Fact]
-    public void Collection_Start_Mapping_Depth_1_Primitives()
-    {
-        //Arrange
-
-        var integers = new List<int> { 1, 2, 3 };
-        var enumerables = integers.AsEnumerable();
-        var queryables = integers.AsQueryable();
-        var readonlyObjects = (IReadOnlyCollection<int>)integers.AsReadOnly();
-
-        //Act
-
-        var integerObjects = _mapper.Map<List<int>, List<int>>(integers, 1);
-        var enumerableObjects = _mapper.Map<IEnumerable<int>, IEnumerable<int>>(enumerables, 1);
-        var queryableObjects = _mapper.Map<IQueryable<int>, IQueryable<int>>(queryables, 1);
-        var iReadonlyCollection = _mapper.Map<IReadOnlyCollection<int>, IReadOnlyCollection<int>>(readonlyObjects, 1);
-
-        //Assert
-
-        Assert.NotNull(integerObjects);
-        Assert.NotNull(enumerableObjects);
-        Assert.NotNull(queryableObjects);
-        Assert.NotNull(readonlyObjects);
-
-        using (var integersEnumerator = integers.GetEnumerator())
-        using (var integerObjectsEnumerator = integerObjects.GetEnumerator())
-        using (var enumerableObjectsEnumerator = enumerableObjects.GetEnumerator())
-        using (var queryableObjectsEnumerator = queryableObjects.GetEnumerator())
-        using (var iReadonlyCollectionEnumerator = iReadonlyCollection.GetEnumerator())
-        {
-            while (integersEnumerator.MoveNext() &&
-                   integerObjectsEnumerator.MoveNext() &&
-                   enumerableObjectsEnumerator.MoveNext() &&
-                   queryableObjectsEnumerator.MoveNext() &&
-                   iReadonlyCollectionEnumerator.MoveNext())
-            {
-                var integer = integersEnumerator.Current;
-                var integerObject = integerObjectsEnumerator.Current;
-                var enumerableObject = enumerableObjectsEnumerator.Current;
-                var queryableObject = queryableObjectsEnumerator.Current;
-                var readonlyObject = iReadonlyCollectionEnumerator.Current;
-
-                Assert.Equal(integerObject, integer);
-                Assert.Equal(enumerableObject, integer);
-                Assert.Equal(queryableObject, integer);
-                Assert.Equal(readonlyObject, integer);
-            }
-        }
-
-        Assert.Equal(integers.Count, integerObjects.Count);
-        Assert.Equal(integers.Count, enumerableObjects.Count());
-        Assert.Equal(integers.Count, queryableObjects.Count());
-        Assert.Equal(integers.Count, iReadonlyCollection.Count);
     }
 
     [Fact]
@@ -338,8 +288,8 @@ public class DefaultMappingCSD1
 
         //Act
         var intMapper = _mapper.Map<int[], int[]>(primitiveArrayInt, 1);
-        var complexMapper = _mapper.Map<User[], UserViewModel[]>(complexArray, 1);
-        var complexMapperWithCollection = _mapper.Map<List<Company<List<User>>>[], List<CompanyViewModel<List<UserViewModel>>>[]>
+        var complexMapper = _mapper.Map<User[], UserViewModelWithLowerCase[]>(complexArray, 1);
+        var complexMapperWithCollection = _mapper.Map<List<Company<List<User>>>[], List<CompanyViewModelWithLowerCase<List<UserViewModelWithLowerCase>>>[]>
             (complexArrayWithCollection, 1);
 
         //Assert
@@ -350,7 +300,7 @@ public class DefaultMappingCSD1
         for (int i = 0; i < complexMapper.Length; i++)
         {
             Assert.NotNull(complexMapper[i]);
-            Assert.Equal(complexMapper[i].Fullname, complexArray[i].Fullname);
+            Assert.Equal(complexMapper[i].fullname, complexArray[i].Fullname);
         }
 
         Assert.NotNull(complexMapperWithCollection);
@@ -359,9 +309,9 @@ public class DefaultMappingCSD1
             Assert.Equal(complexMapperWithCollection[i].Count, complexArrayWithCollection[i].Count);
             for (int y = 0; y < complexMapperWithCollection[i].Count; y++)
             {
-                Assert.Equal(complexMapperWithCollection[i][y].Description, complexArrayWithCollection[i][y].Description);
-                Assert.Null(complexMapperWithCollection[i][y].Director);
-                Assert.Null(complexMapperWithCollection[i][y].Employees);
+                Assert.Equal(complexMapperWithCollection[i][y].DESCRIPTION, complexArrayWithCollection[i][y].Description);
+                Assert.Null(complexMapperWithCollection[i][y].director);
+                Assert.Null(complexMapperWithCollection[i][y].EmployeeS);
             }
         }
     }
@@ -373,11 +323,11 @@ public class DefaultMappingCSD1
         var users = User.CreateMultiUserWith_IQueryable();
 
         //Act
-        var usersVM = users.MapTo<UserViewModel>(1,null);
-        var newQuery = usersVM.Where(x => x.Fullname.StartsWith('J'));
+        var usersVM = users.MapTo<UserViewModelWithLowerCase>(1, _mapper.configurations);
+        var newQuery = usersVM.Where(x => x.fullname.StartsWith('J'));
         var secondQuery = newQuery.Select(x => new
         {
-            Greeting = $"{x.Fullname.First()}{x.Fullname.Last()}"
+            Greeting = $"{x.fullname.First()}{x.fullname.Last()}"
         });
 
         //Assert
@@ -393,13 +343,13 @@ public class DefaultMappingCSD1
                 var userVM = usersVMEnumerator.Current;
 
                 Assert.NotNull(user);
-                Assert.Equal(user.Fullname, userVM.Fullname);
+                Assert.Equal(user.Fullname, userVM.fullname);
             }
         }
 
         Assert.Equal(usersVM.Count(), users.Count());
-        Assert.NotNull(newQuery);       
-        Assert.Equal(2,newQuery.Count());
+        Assert.NotNull(newQuery);
+        Assert.Equal(2, newQuery.Count());
         Assert.True(secondQuery.Any(x => x.Greeting == "Je"));
     }
 }

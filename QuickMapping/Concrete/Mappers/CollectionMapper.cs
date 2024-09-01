@@ -17,8 +17,14 @@ public static class CollectionMapper
 
         var sourceType = source.GetType();
 
-        if (ArrayMapper.Validate(destinationType) && ArrayMapper.Validate(sourceType))
-            throw new MapperException("Array mapper is not supported yet");
+        if (ArrayMapper.Validate(sourceType, destinationType))
+            return ArrayMapper.Map(
+               sourceType,
+               destinationType,
+               source,
+               destination,
+               depth,
+               options);
 
         var sourceElementType = sourceType
             .GetGenericArguments()
@@ -38,8 +44,7 @@ public static class CollectionMapper
                 source,
                 destination,
                 depth,
-                options,
-                MapperDefaults.COLLECTION);
+                options);
 
         if (IQueryableMapper.Validate(destinationElementType, destinationType) &&
             IQueryableMapper.Validate(sourceElementType, sourceType))
@@ -50,8 +55,7 @@ public static class CollectionMapper
                 source,
                 destination,
                 depth,
-                options,
-                MapperDefaults.COLLECTION);
+                options);
 
         if (IEnumerableMapper.Validate(destinationElementType, destinationType) &&
             IEnumerableMapper.Validate(sourceElementType, sourceType))
@@ -62,8 +66,7 @@ public static class CollectionMapper
                 source,
                 destination,
                 depth,
-                options,
-                MapperDefaults.COLLECTION);
+                options);
 
         throw new MapperException("Unsupported mapping type");
     }

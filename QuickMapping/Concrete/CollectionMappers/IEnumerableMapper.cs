@@ -1,6 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
 using QuickMapping.Options;
+using QuickMapping.Validations;
 using System.Collections;
 
 namespace QuickMapping.Concrete.CollectionMappers;
@@ -10,7 +11,6 @@ public static class IEnumerableMapper
         typeof(IEnumerable<>)
         .MakeGenericType(elementType)
         .IsAssignableFrom(collectionType);
-
     public static object Map(
         Type destinationType,
         Type sourceElementType,
@@ -18,11 +18,10 @@ public static class IEnumerableMapper
         object source,
         object? destination,
         int depth,
-        MappingOptions options,
-        string previousProcess)
+        MappingOptions options)
     {
 
-        Type? listType = null;
+        Type? listType;
 
         if (destinationType.IsInterface)        
             listType = typeof(List<>)
@@ -41,27 +40,22 @@ public static class IEnumerableMapper
             
         foreach (var sourceElement in iterateSource)
         {
-            if (PrimitiveMapper.Validate(destinationElementType) &&
-            PrimitiveMapper.Validate(sourceElementType))
+            if (IsPrimitive.Check(destinationElementType) &&
+                IsPrimitive.Check(sourceElementType))
             {
                 addMethod.Invoke(list, [sourceElement]);
             }
             else
             {
-                depth--;
-
                 var destinationElementObject = ObjectMapper.Map(
                 sourceElementType,
                 destinationElementType,
                 depth,
                 sourceElement,
                 options,
-                destination,
-                previousProcess);
+                destination);
 
                 addMethod.Invoke(list, [destinationElementObject]);
-
-                depth++;
             }
         }
         return list ??

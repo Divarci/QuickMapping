@@ -17,11 +17,10 @@ public static class IQueryableMapper
         object source,
         object? destination,
         int depth,
-        MappingOptions options,
-        string previousProcess)
+        MappingOptions options)
     {
         var mappedObject = IEnumerableMapper.Map(destinationType, sourceElementType, 
-            destinationElementType, source, destination, depth, options, previousProcess);
+            destinationElementType, source, destination, depth, options);
 
         Type queryableType = typeof(Queryable);
         string methodName = "AsQueryable";
