@@ -1,7 +1,7 @@
-﻿namespace QuickMapping.Validations;
-public static class IsPrimitive
+﻿namespace QuickMapping.Helpers;
+public static class Validations
 {
-    public static bool Check(Type type) =>
+    public static bool IsPrimitive(Type type) =>
         type.IsPrimitive ||
             new Type[] {
                 typeof(string),

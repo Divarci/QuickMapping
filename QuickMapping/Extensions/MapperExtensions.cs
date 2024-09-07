@@ -1,6 +1,6 @@
 ﻿using QuickMapping.Exceptions;
 using QuickMapping.Options;
-using QuickMapping.Validations;
+using QuickMapping.Helpers;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -71,7 +71,7 @@ public static class MapperExtensions
                 return null;
 
             //SIMPLE TYPE MAPPING
-            if (IsPrimitive.Check(sourceProp.PropertyType))
+            if (Caching.IsPrimitiveOrCached(sourceProp.PropertyType))
                 return Expression.Bind(destProp, Expression.Property(parameter, sourceProp));
 
             //COLLECTION MAPPING

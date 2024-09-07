@@ -1,7 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
+using QuickMapping.Helpers;
 using QuickMapping.Options;
-using QuickMapping.Validations;
 using System.Collections;
 
 namespace QuickMapping.Concrete.CollectionMappers;
@@ -21,42 +21,32 @@ public static class IEnumerableMapper
         MappingOptions options)
     {
 
-        Type? listType;
+        IList list;
 
-        if (destinationType.IsInterface)        
-            listType = typeof(List<>)
-                .MakeGenericType(destinationElementType);
-        else        
-            listType = destinationType
-                .GetGenericTypeDefinition()
-                .MakeGenericType(destinationElementType);
+        if (destinationType.IsInterface)
+            list = (IList)Expressions.CreateInstance(typeof(List<>)
+                .MakeGenericType(destinationElementType));
+        else
+            list = (IList)Expressions.CreateInstance(destinationType)!;
 
-        var list = Activator.CreateInstance(listType);
+        if (Caching.IsPrimitiveOrCached(destinationElementType) &
+            Caching.IsPrimitiveOrCached(sourceElementType))
+            return source;
 
-        var addMethod = listType.GetMethod("Add") ??
-            throw new MapperException("Destination type does not have add method");
+        var iterateSource = (IEnumerable)source;
 
-        var iterateSource = (IEnumerable)source;     
-            
         foreach (var sourceElement in iterateSource)
         {
-            if (IsPrimitive.Check(destinationElementType) &&
-                IsPrimitive.Check(sourceElementType))
-            {
-                addMethod.Invoke(list, [sourceElement]);
-            }
-            else
-            {
-                var destinationElementObject = ObjectMapper.Map(
-                sourceElementType,
-                destinationElementType,
-                depth,
-                sourceElement,
-                options,
-                destination);
+            var destinationElementObject = ObjectMapper.Map(
+            sourceElementType,
+            destinationElementType,
+            depth,
+            sourceElement,
+            options,
+            destination);
 
-                addMethod.Invoke(list, [destinationElementObject]);
-            }
+            list.Add(destinationElementObject);
+
         }
         return list ??
             throw new MapperException("IEnumerable Mapper failed");
