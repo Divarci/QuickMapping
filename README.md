@@ -19,7 +19,7 @@ You can install QuickMapping via NuGet Package Manager or by using the .NET CLI.
 
 Open a terminal or command prompt and run the following command:
 ```
-dotnet add package QuickMapping --version 1.0.5
+dotnet add package QuickMapping --version 1.0.7
 ```
 ## Getting Started
 In the `Program.cs` file, add QuickMapping to the service collection:
@@ -84,9 +84,9 @@ var query = dbData.MapTo<Data,DataViewModel>(3, options) //IQueryable<DataViewMo
 ```
 ## Unsupported Typed
 
-Dictionary and Key-Value Pairs are unsupported and will be available V1.0.7
+Dictionary and Key-Value Pairs are unsupported and will be available V1.0.8
 
-## What will be available V1.0.7 
+## What will be available V1.0.8
 
 1- Dictionary and Key-Value Pairs mapping
 2- Type conversion options
