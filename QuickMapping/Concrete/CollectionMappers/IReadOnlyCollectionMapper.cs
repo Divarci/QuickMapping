@@ -1,7 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
 using QuickMapping.Exceptions;
 using QuickMapping.Options;
-using QuickMapping.Validations;
+using QuickMapping.Helpers;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -32,39 +32,30 @@ public static class IReadOnlyCollectionMapper
         var listType = typeof(List<>)
             .MakeGenericType(destinationElementType);
 
-        var list = Activator.CreateInstance(listType);
+        var list = (IList)Expressions.CreateInstance(listType);
 
-        var addMethod = listType.GetMethod("Add") ??
-            throw new MapperException("Destination type does not have add method");
+        if (Caching.IsPrimitiveOrCached(destinationElementType) &&
+            Caching.IsPrimitiveOrCached(sourceElementType))
+            return source;
 
         var iterateSource = (IEnumerable)source;
 
         foreach (var sourceElement in iterateSource)
         {
+            var destinationElementObject = ObjectMapper.Map(
+            sourceElementType,
+            destinationElementType,
+            depth,
+            sourceElement,
+            options,
+            destination);
 
-            if (IsPrimitive.Check(destinationElementType) &&
-                IsPrimitive.Check(sourceElementType))
-            {
-                addMethod.Invoke(list, [sourceElement]);
-            }
-            else
-            {
-                var destinationElementObject = ObjectMapper.Map(
-                sourceElementType,
-                destinationElementType,
-                depth,
-                sourceElement,
-                options,
-                destination);
-
-                addMethod.Invoke(list, [destinationElementObject]);
-            }
-
+            list.Add(destinationElementObject);
         }
 
         var readonlyListType = typeof(ReadOnlyCollection<>).MakeGenericType(destinationElementType);
 
-        return Activator.CreateInstance(readonlyListType, list) ??
+        return Expressions.CreateInstanceWithConstructor(readonlyListType, list) ??
             throw new MapperException("IReadonlyMapper failed");
     }
 }

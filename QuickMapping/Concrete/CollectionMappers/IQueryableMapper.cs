@@ -10,6 +10,11 @@ public static class IQueryableMapper
             .MakeGenericType(elementType)
             .IsAssignableFrom(collectionType);
 
+    private static readonly MethodInfo AsQueryableMethod = typeof(Queryable)
+            .GetMethods(BindingFlags.Static | BindingFlags.Public)
+            .FirstOrDefault(m => m.Name == "AsQueryable" && m.IsGenericMethod) ??
+            throw new MapperException("AsQueryable not found");
+
     public static object? Map(
         Type destinationType,
         Type sourceElementType,
@@ -21,16 +26,8 @@ public static class IQueryableMapper
     {
         var mappedObject = IEnumerableMapper.Map(destinationType, sourceElementType, 
             destinationElementType, source, destination, depth, options);
-
-        Type queryableType = typeof(Queryable);
-        string methodName = "AsQueryable";
-
-        MethodInfo? asQueryableMethod = queryableType
-            .GetMethods(BindingFlags.Static | BindingFlags.Public)
-            .FirstOrDefault(m => m.Name == methodName && m.IsGenericMethod) ??
-            throw new MapperException("AsQueryable not found");
-
-        var genericQueryableMethod = asQueryableMethod.MakeGenericMethod(destinationElementType);
+      
+        var genericQueryableMethod = AsQueryableMethod.MakeGenericMethod(destinationElementType);
 
         var queryableList = genericQueryableMethod.Invoke(null, [mappedObject]);
         return queryableList;
