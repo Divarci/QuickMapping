@@ -1,12 +1,12 @@
 ﻿using QuickMapping.Exceptions;
+using QuickMapping.Helpers;
 using QuickMapping.Options;
-using QuickMapping.Validations;
 using System.Collections;
-using System.Security.AccessControl;
 
 namespace QuickMapping.Concrete.Mappers;
 public static class ObjectMapper
 {
+
     public static object? Map(
        Type sourceType,
        Type destinationType,
@@ -20,15 +20,22 @@ public static class ObjectMapper
         if (depth <= 0)
             return null!;
 
-        if (CollectionCheck(sourceType) && CollectionCheck(destinationType))
+        var isSourceCollection = CollectionCheck(sourceType);
+        var isDestinationCollection = CollectionCheck(destinationType);
+
+        if (isSourceCollection && isDestinationCollection)
         {
-            DictionaryValidation(sourceType, destinationType);
+            var isSourceArray = sourceType.IsArray;
+            var isDestinationArray = destinationType.IsArray;
 
-            ArrayValidation(sourceType, destinationType);
+            DictionaryValidation(sourceType, destinationType, isSourceCollection, isDestinationCollection);
 
-            CollectionValidation(sourceType, destinationType);
+            ArrayValidation(sourceType, destinationType, isSourceArray, isDestinationArray);
+
+            CollectionValidation(sourceType, destinationType, isSourceArray, isDestinationArray);
 
             return CollectionMapper.Map(
+                sourceType,
                 destinationType,
                 ref depth,
                 source,
@@ -36,85 +43,79 @@ public static class ObjectMapper
                 destination);
         }
 
-        if (CollectionCheck(sourceType) && !CollectionCheck(destinationType))
-            throw new MapperException("Unsupported mapping type");
+        if (!isSourceCollection && !isDestinationCollection)
+            return SingleUnitMapper.Map(
+                sourceType,
+                destinationType,
+                ref depth,
+                source,
+                options,
+                destination);
 
-        if (!CollectionCheck(sourceType) && CollectionCheck(destinationType))
-            throw new MapperException("Unsupported mapping type");
-
-        return SingleUnitMapper.Map(
-            sourceType,
-            destinationType,
-            ref depth,
-            source,
-            options,
-            destination);
+        throw new MapperException("Unsupported mapping type");
     }
 
     private static bool CollectionCheck(Type type) =>
         typeof(IEnumerable)
         .IsAssignableFrom(type) &&
         type != typeof(string);
-
-    private static void DictionaryValidation(Type sourceType, Type destinationType)
+  
+    private static void DictionaryValidation(Type sourceType, Type destinationType,
+        bool isSourceCollection, bool isDestinationCollection)
     {
-        if (CollectionCheck(sourceType) &&
-                sourceType.Name.Contains("Dictionary") || sourceType.Name.Contains("KeyValue"))
-            throw new MapperException("Unsupported mapping type");
-
-        if (CollectionCheck(destinationType) &&
-           destinationType.Name.Contains("Dictionary") || destinationType.Name.Contains("KeyValue"))
-            throw new MapperException("Unsupported mapping type");
+        if (isSourceCollection || isDestinationCollection)
+            if (sourceType.Name.Contains("Dictionary") || sourceType.Name.Contains("KeyValue") ||
+                destinationType.Name.Contains("Dictionary") || destinationType.Name.Contains("KeyValue"))
+                throw new MapperException("Unsupported mapping type");
     }
 
-    private static void ArrayValidation(Type sourceType, Type destinationType)
+    private static void ArrayValidation(Type sourceType, Type destinationType,
+        bool isSourceArray, bool isDestinationArray)
     {
-        if (sourceType.IsArray)
+        if (isSourceArray && isDestinationArray)
         {
-            if (!destinationType.IsArray)
+            var sourceElementType = sourceType.GetElementType();
+            var destinationElementType = destinationType.GetElementType();
+
+            var resultForSourceElement = Caching.IsPrimitiveOrCached(sourceElementType!);
+            var resultForDestinationElement = Caching.IsPrimitiveOrCached(destinationElementType!);
+
+            if ((resultForDestinationElement != resultForSourceElement) || 
+                (resultForSourceElement && resultForDestinationElement && (sourceElementType != destinationElementType)))
                 throw new MapperException("Unsupported mapping type");
 
-            if (IsPrimitive.Check(sourceType.GetElementType()!) &&
-                IsPrimitive.Check(destinationType.GetElementType()!))
-                if (sourceType.GetElementType() != destinationType.GetElementType())
-                    throw new MapperException("Unsupported mapping type");
-
-            if (IsPrimitive.Check(sourceType.GetElementType()!) &&
-                !IsPrimitive.Check(destinationType.GetElementType()!))
-                throw new MapperException("Unsupported mapping type");
-
-
-            if (!IsPrimitive.Check(sourceType.GetElementType()!) &&
-                IsPrimitive.Check(destinationType.GetElementType()!))
-                throw new MapperException("Unsupported mapping type");
+            return;
         }
 
-        if(destinationType.IsArray)
-            if(!sourceType.IsArray)
-                throw new MapperException("Unsupported mapping type");
-    }
-
-    private static void CollectionValidation(Type sourceType, Type destinationType)
-    {
-        if (sourceType.IsArray && destinationType.IsArray)
+        if (!isSourceArray && !isDestinationArray)
             return;
 
-        if (IsPrimitive.Check(sourceType.GetGenericArguments()[0]) &&
-            IsPrimitive.Check(destinationType.GetGenericArguments()[0]))
-            if (sourceType.GetGenericArguments()[0] !=
-                destinationType.GetGenericArguments()[0])
-                throw new MapperException("Unsupported mapping type");
+        throw new MapperException("Unsupported mapping type");
+    }
 
-        if (IsPrimitive.Check(sourceType.GetGenericArguments()[0]) &&
-            !IsPrimitive.Check(destinationType.GetGenericArguments()[0]))
+    private static void CollectionValidation(Type sourceType, Type destinationType,
+        bool isSourceArray, bool isDestinationArray)
+    {
+        if (isSourceArray && isDestinationArray)
+            return;
+
+        var sourceGenericArg = sourceType.GetGenericArguments()[0];
+        var destinationGenericArg = destinationType.GetGenericArguments()[0];
+
+        var isSourcePrimitive = Caching.IsPrimitiveOrCached(sourceGenericArg);
+        var isDestinationPrimitive = Caching.IsPrimitiveOrCached(destinationGenericArg);
+
+        if (isSourcePrimitive && isDestinationPrimitive && (sourceGenericArg != destinationGenericArg))
             throw new MapperException("Unsupported mapping type");
 
-        if (!IsPrimitive.Check(sourceType.GetGenericArguments()[0]) &&
-            IsPrimitive.Check(destinationType.GetGenericArguments()[0]))
+        if (isSourcePrimitive != isDestinationPrimitive)
             throw new MapperException("Unsupported mapping type");
 
-        if (sourceType.GetGenericTypeDefinition() !=
-            destinationType.GetGenericTypeDefinition())
+        var sourceGenericDef = sourceType.GetGenericTypeDefinition();
+        var destinationGenericDef = destinationType.GetGenericTypeDefinition();
+
+        if (sourceGenericDef != destinationGenericDef)
             throw new MapperException("Unsupported mapping type");
+
     }
 }

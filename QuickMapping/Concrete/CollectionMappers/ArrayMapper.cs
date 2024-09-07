@@ -1,6 +1,7 @@
 ﻿using QuickMapping.Concrete.Mappers;
+using QuickMapping.Exceptions;
 using QuickMapping.Options;
-using QuickMapping.Validations;
+using QuickMapping.Helpers;
 
 namespace QuickMapping.Concrete.CollectionMappers;
 public static class ArrayMapper
@@ -15,32 +16,32 @@ public static class ArrayMapper
        object? destination,
        int depth,
        MappingOptions options)
-    {       
+    {
         var sourceArray = (Array)source;
-        
-        var destinationArray = Array
-            .CreateInstance(destinationType.GetElementType()!, sourceArray.Length);
+
+        if (sourceArray.Length < 0)
+            throw new MapperException("Source can not be empty object");
+
+        if (Caching.IsPrimitiveOrCached(sourceArray.GetValue(0)!.GetType()))
+            return sourceArray;
+
+        var sourceElementType = sourceType.GetElementType();
+        var destinationElementType = destinationType.GetElementType();
+
+        var destinationArray = Expressions.CreateArrayInstance(destinationElementType!, sourceArray.Length);
 
         for (int i = 0; i < sourceArray.Length; i++)
         {
-            if (IsPrimitive.Check(sourceArray.GetValue(i)!.GetType()))
-            {                
-                destinationArray.SetValue(sourceArray.GetValue(i), i);
-                continue;
-            }
-            else
-            {
-                var destinationElementObject = ObjectMapper.Map(
-                    sourceType.GetElementType()!,
-                    destinationType.GetElementType()!,
-                    depth,
-                    sourceArray.GetValue(i)!,
-                    options,
-                    destination);
+            var destinationElementObject = ObjectMapper.Map(
+                sourceElementType!,
+                destinationElementType!,
+                depth,
+                sourceArray.GetValue(i)!,
+                options,
+                destination);
 
-                destinationArray.SetValue(destinationElementObject, i);
-                continue;
-            }
+            destinationArray.SetValue(destinationElementObject, i);
+            continue;
         }
         return destinationArray;
     }

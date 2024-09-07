@@ -1,4 +1,5 @@
 ﻿using QuickMapping.Exceptions;
+using QuickMapping.Helpers;
 using QuickMapping.Options;
 using System.Collections;
 using System.Reflection;
@@ -17,18 +18,18 @@ public static class SingleUnitMapper
         Dictionary<string, PropertyInfo> sourceProperties;
 
         if (options is not null && !options.IsSensitiveCase)
-            sourceProperties = sourceType
-                .GetProperties()
+            sourceProperties = Caching
+                .GetProperties(sourceType)
                 .ToDictionary(p => p.Name.ToLower());
         else
-            sourceProperties = sourceType
-                .GetProperties()
+            sourceProperties = Caching
+                .GetProperties(sourceType)
                 .ToDictionary(p => p.Name);
 
-        var destinationProperties = destinationType.GetProperties();
+        var destinationProperties = Caching
+                .GetProperties(destinationType);
 
-        var mappedObject = destination
-            ?? Activator.CreateInstance(destinationType);
+        var mappedObject = destination ?? Expressions.CreateInstance(destinationType);
 
         foreach (var destinationProperty in destinationProperties)
         {
@@ -45,6 +46,14 @@ public static class SingleUnitMapper
                     continue;
             }
 
+            if (destinationProperty.PropertyType == sourceProperty!.PropertyType)
+            {
+                var value = sourceProperty.GetValue(source) ??
+                    throw new MapperException("Source property value can not be null");
+
+                destinationProperty.SetValue(mappedObject, value);
+                continue;
+            }
 
             if ((destinationProperty.PropertyType.IsClass || destinationProperty.PropertyType.IsInterface) &&
                  destinationProperty.PropertyType != typeof(string))
@@ -56,7 +65,7 @@ public static class SingleUnitMapper
 
                 object? nestedDestination = null;
 
-                if(destination is not null)
+                if (destination is not null)
                     nestedDestination = destinationProperty!.GetValue(destination);
 
                 if (nestedValue is IEnumerable)
@@ -74,15 +83,6 @@ public static class SingleUnitMapper
 
                 destinationProperty.SetValue(mappedObject, subDestination);
 
-                continue;
-            }
-
-            if (destinationProperty.PropertyType == sourceProperty!.PropertyType)
-            {
-                var value = sourceProperty.GetValue(source) ??
-                    throw new MapperException("Source property value can not be null");
-
-                destinationProperty.SetValue(mappedObject, value);
                 continue;
             }
         }
