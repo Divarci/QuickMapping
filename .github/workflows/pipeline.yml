@@ -51,8 +51,8 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release
 
-      - name: Pack the NuGet package
-        run: dotnet pack --configuration Release --output ./nupkgs
+      - name: Pack the NuGet package (QuickMapper only)
+        run: dotnet pack --configuration Release --output ./nupkgs ./QuickMapping/QuickMapping.csproj
 
       - name: Find .nupkg file
         id: find_nuget_package
