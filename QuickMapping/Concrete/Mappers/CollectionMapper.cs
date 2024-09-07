@@ -6,6 +6,7 @@ namespace QuickMapping.Concrete.Mappers;
 public static class CollectionMapper
 {
     public static object? Map(
+        Type sourceType,
         Type destinationType,
         ref int depth,
         object source,
@@ -14,8 +15,6 @@ public static class CollectionMapper
     {
         if (source == null)
             throw new MapperException("Source can not be null");
-
-        var sourceType = source.GetType();
 
         if (ArrayMapper.Validate(sourceType, destinationType))
             return ArrayMapper.Map(

@@ -1,6 +1,5 @@
 ﻿using QuickMapping.Abstract;
 using QuickMapping.Concrete;
-using QuickMapping.Exceptions;
 using QuickMapping.Tests.Entities;
 using QuickMapping.Tests.Tests.DefaultOptions.Models;
 using System.Collections.ObjectModel;
