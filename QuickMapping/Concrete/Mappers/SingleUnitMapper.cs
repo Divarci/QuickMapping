@@ -29,7 +29,7 @@ public static class SingleUnitMapper
         var destinationProperties = Caching
                 .GetProperties(destinationType);
 
-        var mappedObject = destination ?? Expressions.CreateInstance(destinationType);
+        var mappedObject = destination ?? Activator.CreateInstance(destinationType);
 
         foreach (var destinationProperty in destinationProperties)
         {
