@@ -28,7 +28,7 @@ public static class ArrayMapper
         var sourceElementType = sourceType.GetElementType();
         var destinationElementType = destinationType.GetElementType();
 
-        var destinationArray = Expressions.CreateArrayInstance(destinationElementType!, sourceArray.Length);
+        var destinationArray = Array.CreateInstance(destinationElementType!, sourceArray.Length);
 
         for (int i = 0; i < sourceArray.Length; i++)
         {
