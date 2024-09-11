@@ -1,5 +1,6 @@
 ﻿using QuickMapping.Concrete.CollectionMappers;
 using QuickMapping.Exceptions;
+using QuickMapping.Helpers;
 using QuickMapping.Options;
 
 namespace QuickMapping.Concrete.Mappers;
@@ -25,14 +26,10 @@ public static class CollectionMapper
                depth,
                options);
 
-        var sourceElementType = sourceType
-            .GetGenericArguments()
-            .FirstOrDefault() ??
+        var sourceElementType = Caching.GetGenericArgType(sourceType) ??
             throw new MapperException("Source type must be a generic collection");
 
-        var destinationElementType = destinationType
-            .GetGenericArguments()
-            .FirstOrDefault() ??
+        var destinationElementType = Caching.GetGenericArgType(destinationType) ??
             throw new MapperException("Destination type must be a generic collection");
 
         if (IReadOnlyCollectionMapper.Validate(destinationElementType, destinationType, source) &&
