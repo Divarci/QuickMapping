@@ -2,13 +2,24 @@
 using System.Collections.ObjectModel;
 
 namespace QuickMapping.Tests.Entities;
-public class Company<T>(int id, string description, T employees, User director)
+public class Company<T>
 {
-    public int Id { get; set; } = id;
-    public string Description { get; set; } = description;
 
-    public User Director { get; set; } = director;
-    public T Employees { get; set; } = employees;
+    public int Id { get; set; }
+    public string Description { get; set; } = null!;
+
+    public User Director { get; set; } = null!;
+    public T Employees { get; set; } = default!;
+
+    public Company(int id, string description, T employees, User director)
+    {
+        Id = id;
+        Description = description;
+        Director = director;
+        Employees = employees;
+    }
+
+    public Company() {}
 
     public static Company<T> CreateSingleCompany(string description, ListType listType)
     {
