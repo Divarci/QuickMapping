@@ -19,7 +19,7 @@ You can install QuickMapping via NuGet Package Manager or by using the .NET CLI.
 
 Open a terminal or command prompt and run the following command:
 ```
-dotnet add package QuickMapping --version 1.0.7
+dotnet add package QuickMapping --version 1.0.71
 ```
 ## Getting Started
 In the `Program.cs` file, add QuickMapping to the service collection:
