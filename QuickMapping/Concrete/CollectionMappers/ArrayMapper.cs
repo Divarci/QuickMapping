@@ -25,10 +25,10 @@ public static class ArrayMapper
         if (Caching.IsPrimitiveOrCached(sourceArray.GetValue(0)!.GetType()))
             return sourceArray;
 
-        var sourceElementType = sourceType.GetElementType();
-        var destinationElementType = destinationType.GetElementType();
+        var sourceElementType = Caching.GetElementType(sourceType);
+        var destinationElementType = Caching.GetElementType(destinationType);
 
-        var destinationArray = Expressions.CreateArrayInstance(destinationElementType!, sourceArray.Length);
+        var destinationArray = Array.CreateInstance(destinationElementType!, sourceArray.Length);
 
         for (int i = 0; i < sourceArray.Length; i++)
         {

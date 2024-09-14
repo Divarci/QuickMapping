@@ -2,6 +2,7 @@
 using QuickMapping.Helpers;
 using QuickMapping.Options;
 using System.Collections;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace QuickMapping.Concrete.Mappers;
@@ -16,47 +17,47 @@ public static class SingleUnitMapper
        object? destination = null)
     {
         Dictionary<string, PropertyInfo> sourceProperties;
+        Dictionary<string, PropertyInfo> destinationProperties;
 
         if (options is not null && !options.IsSensitiveCase)
+        {
             sourceProperties = Caching
-                .GetProperties(sourceType)
-                .ToDictionary(p => p.Name.ToLower());
+                .GetPropertiesWithLowerCase(sourceType);               
+
+            destinationProperties = Caching
+                .GetPropertiesWithLowerCase(destinationType);
+        }
         else
+        {
             sourceProperties = Caching
-                .GetProperties(sourceType)
-                .ToDictionary(p => p.Name);
+                .GetPropertiesWithDefaultCase(sourceType);             
 
-        var destinationProperties = Caching
-                .GetProperties(destinationType);
+            destinationProperties = Caching
+                .GetPropertiesWithDefaultCase(destinationType);
+        }
 
-        var mappedObject = destination ?? Expressions.CreateInstance(destinationType);
+        var mappedObject = destination ?? Caching.GetInstance(destinationType)();
 
         foreach (var destinationProperty in destinationProperties)
         {
-            PropertyInfo? sourceProperty = null;
 
-            if (options is not null && !options.IsSensitiveCase)
-            {
-                if (!sourceProperties.TryGetValue(destinationProperty.Name.ToLower(), out sourceProperty))
-                    continue;
-            }
-            else
-            {
-                if (!sourceProperties.TryGetValue(destinationProperty.Name, out sourceProperty))
-                    continue;
-            }
+            if (!sourceProperties.TryGetValue(destinationProperty.Key, out PropertyInfo? sourceProperty))
+                continue;
 
-            if (destinationProperty.PropertyType == sourceProperty!.PropertyType)
+            var dstinationPropertyType = Caching.GetPropertyType(destinationProperty.Value);
+            var sourcePropertyType = Caching.GetPropertyType(sourceProperty);
+
+            if (dstinationPropertyType == sourcePropertyType)
             {
                 var value = sourceProperty.GetValue(source) ??
                     throw new MapperException("Source property value can not be null");
 
-                destinationProperty.SetValue(mappedObject, value);
+                destinationProperty.Value.SetValue(mappedObject, value);
                 continue;
             }
 
-            if ((destinationProperty.PropertyType.IsClass || destinationProperty.PropertyType.IsInterface) &&
-                 destinationProperty.PropertyType != typeof(string))
+            if ((dstinationPropertyType.IsClass || dstinationPropertyType.IsInterface) &&
+                 dstinationPropertyType != typeof(string))
             {
                 var nestedValue = sourceProperty!.GetValue(source) ??
                     throw new MapperException("Nested value can not be null");
@@ -66,14 +67,14 @@ public static class SingleUnitMapper
                 object? nestedDestination = null;
 
                 if (destination is not null)
-                    nestedDestination = destinationProperty!.GetValue(destination);
+                    nestedDestination = destinationProperty!.Value.GetValue(destination);
 
                 if (nestedValue is IEnumerable)
                     nestedDestination = null;
 
                 var subDestination = ObjectMapper.Map(
-                    sourceProperty.PropertyType,
-                    destinationProperty.PropertyType,
+                    sourcePropertyType,
+                    dstinationPropertyType,
                     depth,
                     nestedValue,
                     options!,
@@ -81,7 +82,7 @@ public static class SingleUnitMapper
 
                 depth++;
 
-                destinationProperty.SetValue(mappedObject, subDestination);
+                destinationProperty.Value.SetValue(mappedObject, subDestination);
 
                 continue;
             }

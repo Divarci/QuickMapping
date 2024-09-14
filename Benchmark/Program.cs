@@ -1,5 +1,4 @@
-﻿
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using QuickMapping.Abstract;
 using QuickMapping.Concrete;
@@ -10,24 +9,50 @@ BenchmarkSwitcher
     .FromAssembly(typeof(Program).Assembly)
     .Run(args);
 
-
 [MemoryDiagnoser]
-[ShortRunJob]
 public class MyBenchmark
 {
     private IQuickMapper _qMapper;
-    private List<User> _members;
+    private List<User> singleList;
+    private IList<Company<IList<User>>> multiList;
+    private List<User> massive_singleList = new();
+    private List<Company<IList<User>>> massive_multiList = new List<Company<IList<User>>>();
 
     [GlobalSetup]
     public void Setup()
     {
-        _members = User.CreateMultiUserWith_List();
+        
+        singleList = User.CreateMultiUserWith_List();
+
+        multiList = Company<IList<User>>.CreateMultiCompanyWith_IList();
+
+        for (int i = 0; i < 1000; i++)        
+            massive_singleList.Add(User.CreateSingleUser("Test"));
+
+        for (int i = 0; i < 1000; i++)
+            massive_multiList.Add(Company<IList<User>>.CreateSingleCompany("Test",ListType.IList));
+        massive_multiList.AsReadOnly();
         _qMapper = new QuickMapper();
     }
 
+
     [Benchmark]
-    public void Quickmapper()
-    {
-        var mappedObjectByQM = _qMapper.Map<List<User>, List<UserViewModel>>(_members, 2);
-    }
+    public void SingleList() =>
+       _qMapper.Map<List<User>, List<UserViewModel>>(singleList, 3);
+
+    [Benchmark]
+    public void MultiList() =>
+        _qMapper.Map<IList<Company<IList<User>>>, IList<UserViewModel>>(multiList, 3);
+
+    [Benchmark]
+    public void Massive_SingleList() =>
+        _qMapper.Map<List<User>, List<UserViewModel>>(massive_singleList, 3);
+
+    [Benchmark]
+    public void Massive_MultiList() =>
+        _qMapper.Map<IList<Company<IList<User>>>, IList<UserViewModel>>(massive_multiList, 3);
+
+   
+
 }
+
