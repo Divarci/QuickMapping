@@ -16,6 +16,9 @@ namespace QuickMapping.Helpers
         private static ConcurrentDictionary<PropertyInfo, Type> _getPropertyTypes = new();
         private static ConcurrentDictionary<Type, Func<object>> _getInstanceInfoList = new();
         private static ConcurrentDictionary<Type[], bool> _getCollectionValidationList = new();
+        private static ConcurrentDictionary<Type, Func<object, object>> _getInstanceInfoReadonlyList = new();
+        private static ConcurrentDictionary<string, Type> _getTypeInfoList = new();
+
 
         public static Dictionary<string, PropertyInfo> GetPropertiesWithDefaultCase(Type type) =>
             _propertiesWithDefaultCase
@@ -65,20 +68,24 @@ namespace QuickMapping.Helpers
             _getPropertyTypes
             .GetOrAdd(
                 propertyInfo,
-                t => t.PropertyType);            
-      
+                t => t.PropertyType);
+
         public static Func<object> GetInstance(Type type) =>
            _getInstanceInfoList
            .GetOrAdd(
                type,
                key => InstanceFactory.CreateInstance(type));
 
-        public static bool IsCollectionValid(Type sourceType,Type destinationType) =>
+        public static bool IsCollectionValid(Type sourceType, Type destinationType) =>
             _getCollectionValidationList
             .GetOrAdd(
-                [sourceType,destinationType],
+                [sourceType, destinationType],
                 key => Validations.IsCollectionValid(sourceType, destinationType));
 
-
+        public static Func<object, object> GetReadonlyCollectionInstance(Type readonlyCollectionType, Type elementType) =>
+            _getInstanceInfoReadonlyList
+            .GetOrAdd(
+                readonlyCollectionType,
+                key => InstanceFactory.CreateReadOnlyCollectionInstance(readonlyCollectionType, elementType));
     }
 }

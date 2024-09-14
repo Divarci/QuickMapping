@@ -14,9 +14,9 @@ public class MyBenchmark
 {
     private IQuickMapper _qMapper;
     private List<User> singleList;
-    private List<Company<List<User>>> multiList;
+    private IList<Company<IList<User>>> multiList;
     private List<User> massive_singleList = new();
-    private List<Company<List<User>>> massive_multiList = new();
+    private List<Company<IList<User>>> massive_multiList = new List<Company<IList<User>>>();
 
     [GlobalSetup]
     public void Setup()
@@ -24,14 +24,14 @@ public class MyBenchmark
         
         singleList = User.CreateMultiUserWith_List();
 
-        multiList = Company<List<User>>.CreateMultiCompanyWith_List();
+        multiList = Company<IList<User>>.CreateMultiCompanyWith_IList();
 
         for (int i = 0; i < 1000; i++)        
             massive_singleList.Add(User.CreateSingleUser("Test"));
 
         for (int i = 0; i < 1000; i++)
-            massive_multiList.Add(Company<List<User>>.CreateSingleCompany("Test",ListType.List));
-
+            massive_multiList.Add(Company<IList<User>>.CreateSingleCompany("Test",ListType.IList));
+        massive_multiList.AsReadOnly();
         _qMapper = new QuickMapper();
     }
 
@@ -42,7 +42,7 @@ public class MyBenchmark
 
     [Benchmark]
     public void MultiList() =>
-        _qMapper.Map<List<Company<List<User>>>, List<UserViewModel>>(multiList, 3);
+        _qMapper.Map<IList<Company<IList<User>>>, IList<UserViewModel>>(multiList, 3);
 
     [Benchmark]
     public void Massive_SingleList() =>
@@ -50,7 +50,7 @@ public class MyBenchmark
 
     [Benchmark]
     public void Massive_MultiList() =>
-        _qMapper.Map<List<Company<List<User>>>, List<UserViewModel>>(massive_multiList, 3);
+        _qMapper.Map<IList<Company<IList<User>>>, IList<UserViewModel>>(massive_multiList, 3);
 
    
 

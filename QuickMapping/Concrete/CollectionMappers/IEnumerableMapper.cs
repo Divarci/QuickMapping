@@ -24,10 +24,10 @@ public static class IEnumerableMapper
         IList list;
 
         if (destinationType.IsInterface)
-            list = (IList)Activator.CreateInstance(typeof(List<>)
-                .MakeGenericType(destinationElementType))!;
+            list = (IList)Caching.GetInstance(typeof(List<>)
+                .MakeGenericType(destinationElementType))();
         else
-            list = (IList)Activator.CreateInstance(destinationType)!;
+            list = (IList)Caching.GetInstance(destinationType)();
 
         if (Caching.IsPrimitiveOrCached(destinationElementType) &
             Caching.IsPrimitiveOrCached(sourceElementType))
