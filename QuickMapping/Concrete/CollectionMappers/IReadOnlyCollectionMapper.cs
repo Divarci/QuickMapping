@@ -32,7 +32,7 @@ public static class IReadOnlyCollectionMapper
         var listType = typeof(List<>)
             .MakeGenericType(destinationElementType);
 
-        var list = (IList)Activator.CreateInstance(listType)!;
+        var list = (IList)Caching.GetInstance(listType)();
 
         if (Caching.IsPrimitiveOrCached(destinationElementType) &&
             Caching.IsPrimitiveOrCached(sourceElementType))
@@ -55,7 +55,7 @@ public static class IReadOnlyCollectionMapper
 
         var readonlyListType = typeof(ReadOnlyCollection<>).MakeGenericType(destinationElementType);
 
-        return Activator.CreateInstance(readonlyListType, list) ??
+        return Caching.GetReadonlyCollectionInstance(readonlyListType, destinationElementType)(list) ??
             throw new MapperException("IReadonlyMapper failed");
     }
 }

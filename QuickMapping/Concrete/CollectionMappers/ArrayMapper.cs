@@ -25,8 +25,8 @@ public static class ArrayMapper
         if (Caching.IsPrimitiveOrCached(sourceArray.GetValue(0)!.GetType()))
             return sourceArray;
 
-        var sourceElementType = sourceType.GetElementType();
-        var destinationElementType = destinationType.GetElementType();
+        var sourceElementType = Caching.GetElementType(sourceType);
+        var destinationElementType = Caching.GetElementType(destinationType);
 
         var destinationArray = Array.CreateInstance(destinationElementType!, sourceArray.Length);
 
